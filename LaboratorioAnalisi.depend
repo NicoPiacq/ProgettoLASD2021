@@ -1,0 +1,42 @@
+# depslib dependency file v1.0
+1618502133 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\main.c
+	"HeaderPaziente.h"
+	"windows.h"
+
+1618385459 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\definizioni.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1618504782 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\headerpaziente.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1618505787 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\funzionipaziente.c
+	"HeaderPaziente.h"
+	"windows.h"
+
+1618387090 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\headergenerale.h
+	<stdio.h>
+	<stdlib.h>
+
+1618409671 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\funzionigenerale.c
+	"HeaderGenerale.h"
+	"HeaderPaziente.h"
+	"windows.h"
+
+1618567925 source:c:\users\nicola\desktop\uni_files\labasd\laboratorioanalisi\funzionipaziente.c
+	"HeaderPaziente.h"
+
+1618566968 c:\users\nicola\desktop\uni_files\labasd\laboratorioanalisi\headerpaziente.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"windows.h"
+	"conio.h"
+
+1618567562 source:c:\users\nicola\desktop\uni_files\labasd\laboratorioanalisi\main.c
+	"HeaderPaziente.h"
+	"windows.h"
+
