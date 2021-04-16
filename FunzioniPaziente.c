@@ -1,13 +1,5 @@
 #include "HeaderPaziente.h"
 
-/* struct paziente {
-    char codiceFiscale[17];
-    char nome[12];
-    char cognome[12];
-    char password[10];
-    int haEsito;
-} datiPaziente; */
-
 // QUESTE TRE FUNZIONI SONO PURAMENTE GRAFICHE E SERVONO PER GUIDARE L'UTENTE NELLA REGISTRAZIONE DEI DATI (E A NON SPORCARE LA CONSOLE)
 void mostraMessaggioRegistrazione1() {
     printf("Benvenuto nella pagina di registrazione al Laboratorio di Analisi 'San Nicola' per Tamponi Molecolari COVID-19.\n");
@@ -157,6 +149,68 @@ void registrazionePaziente() {
 
 
 
+int controllaSeGiaPrenotato(char codFiscale[]) {
+
+    FILE *fileAppuntamentiRichiesti;
+
+    fileAppuntamentiRichiesti = fopen("Dati/AppuntamentiRichiesti.txt", "r");
+
+    if(fileAppuntamentiRichiesti == NULL) {
+        printf("ERRORE! Non riesco a trovare il file degli appuntamenti richiesti!");
+        exit(-1);
+    }
+
+    char stringaCodFiscaleFile[17];
+    char stringaSintomiFile[256];
+
+    while(fscanf(fileAppuntamentiRichiesti, "%s %[^\n]%*c",stringaCodFiscaleFile, stringaSintomiFile) == 2) {
+
+        if(strcmp(stringaCodFiscaleFile, codFiscale) == 0) {
+            fclose(fileAppuntamentiRichiesti);
+            return 1;
+        }
+    }
+
+    fclose(fileAppuntamentiRichiesti);
+
+    return 0;
+}
+
+int controllaSeGiaConfermato(char codFiscale[]) {
+
+    FILE *fileAppuntamentoConfermato;
+
+    char stringaCodFiscaleFile[17];
+    int n_giorno;
+    char ora_giorno[11];
+
+    fileAppuntamentoConfermato = fopen("Dati/AppuntamentiConfermati.txt", "r");
+
+    if(fileAppuntamentoConfermato == NULL) {
+        printf("ERRORE! Non riesco a trovare il file degli appuntamenti confermati!");
+        exit(-1);
+    }
+
+    while(fscanf(fileAppuntamentoConfermato, "%s %d %s",stringaCodFiscaleFile, &n_giorno, ora_giorno) == 3) {
+        if(strcmp(stringaCodFiscaleFile, codFiscale) == 0) {
+            fclose(fileAppuntamentoConfermato);
+            return 2;
+        }
+        else {
+
+            if(controllaSeGiaPrenotato(codFiscale) == 0) {
+                fclose(fileAppuntamentoConfermato);
+                return 0;
+            }
+
+            fclose(fileAppuntamentoConfermato);
+            return 1;
+        }
+    }
+
+    fclose(fileAppuntamentoConfermato);
+    return 3;
+}
 
 
 void visualizzaStatoAppuntamento(char codFiscale[]) {
@@ -167,54 +221,152 @@ void visualizzaStatoAppuntamento(char codFiscale[]) {
     int n_giorno;
     char ora_giorno[11];
 
-    if(controllaSeGiaPrenotato(codFiscale) == 1) {
-        printf("\nNon hai richiesto nessun tampone.\nLa preghiamo di usare la funzione apposita per farlo.\n");
-        Sleep(4000);
-        return;
-    }
-    else {
-        while(fscanf(TempPf, "%s %d %s",stringaCodFiscaleFile, &n_giorno, ora_giorno) == 3) {
-            if(strcmp(stringaCodFiscaleFile, codFiscale) == 0) {
-                printf("\nAppuntamento confermato!\nDevi andare il Giorno %d di %s\n\n", n_giorno, ora_giorno);
-                printf("Tra 10 secondi ritornerai nella pagina principale...");
-                Sleep(10000);
-                return;
+    int statoRichiesta = controllaSeGiaConfermato(codFiscale);
+
+    switch(statoRichiesta) {
+        case 0: {
+            printf("\nNon hai richiesto nessun tampone.\nLa preghiamo di usare la funzione apposita per farlo.\n");
+            Sleep(4000);
+            return;
+        }
+        case 1: {
+            printf("\nLa tua richiesta non e' stata ancora accettata.\nRiprova piu' tardi.\n");
+            Sleep(4000);
+            return;
+        }
+        case 2: {
+            while(fscanf(TempPf, "%s %d %s",stringaCodFiscaleFile, &n_giorno, ora_giorno) == 3) {
+                if(strcmp(stringaCodFiscaleFile, codFiscale) == 0) {
+                    printf("\nAppuntamento confermato!\nDevi andare il Giorno %d di %s\n\n", n_giorno, ora_giorno);
+                    printf("Tra 10 secondi ritornerai nella pagina principale...");
+                    Sleep(10000);
+                    fclose(TempPf);
+                    return;
+                }
             }
         }
-        printf("\nAttualmente la richiesta non e' stata ancora accettata.\nRiprova piu' tardi.\n\n");
-        Sleep(6000);
-        return;
     }
 }
 
 
-int controllaSeGiaPrenotato(char codFiscale[]) {
+void aggiornaStatoRichiesta(char codFiscale[]) {
 
-    FILE *fileAppuntamentiRichiesti;
-
-    fileAppuntamentiRichiesti = fopen("Dati/AppuntamentiRichiesti.txt", "r");
-
-    if(fileAppuntamentiRichiesti == NULL) {
-        printf("ERRORE! Non riesco a trovare il file dei dati utente!");
-        exit(-1);
-    }
-
-    char stringaCodFiscaleFile[17];
-    char stringaSintomiFile[256];
-
-    while(fscanf(fileAppuntamentiRichiesti, "%s %[^\n]%*c",stringaCodFiscaleFile, stringaSintomiFile) == 2) {
-
-        if(strcmp(stringaCodFiscaleFile, codFiscale) == 0) {
-            return 0;
+    switch(controllaSeGiaConfermato(codFiscale)) {
+        case 0: {
+            printf("Non effettuato\n\n");
+            break;
         }
-
+        case 1: {
+            printf("In conferma\n\n");
+            break;
+        }
+        case 2: {
+            printf("Confermato\n\n");
+            break;
+        }
+        default: {
+            printf("Errore\n\n");
+            break;
+        }
     }
-
-    fclose(fileAppuntamentiRichiesti);
-
-    return 1;
 }
 
+void cancellaRichiestaTampone(char codFiscale[]) {
+
+    switch(controllaSeGiaConfermato(codFiscale)) {
+        case 0: {
+            printf("\nNessuna richiesta da cancellare.\nDevi prima crearne una.");
+            Sleep(4500);
+            return;
+        }
+        case 1: {
+            break;
+        }
+        case 2: {
+            printf("\nImpossibile eliminare:\nLa tua richiesta e' stata gia' accettata nel sistema!");
+            Sleep(4000);
+            return;
+        }
+        default: {
+            printf("\nErrore sconosciuto.\nContattare l'assistenza.");
+            Sleep(4000);
+            return;
+        }
+    }
+
+    char opzione;
+
+    do {
+        system("cls");
+
+        printf("Eliminando la tua richiesta, dovrai rifarla nuovamente per ottenere un appuntamento al Laboratorio.\n\nPer procedere:\n\nDigita S e premi INVIO per cancellare la richiesta;\nDigita N e premi INVIO per tornare indietro.\n");
+        printf("\nScelta: ");
+        scanf(" %s",&opzione);
+
+        switch(opzione) {
+            case 'S': {
+                printf("\n\nOK.\nCancellazione in corso...\n");
+
+                FILE *fileNuovoRichieste;
+                FILE *fileVecchioRichieste;
+
+                char stringaCodFiscaleFile[17];
+                char stringaSintomiFile[100];
+
+                fileVecchioRichieste = fopen("Dati/AppuntamentiRichiesti.txt", "r");
+                if(fileVecchioRichieste == NULL) {
+                    printf("\nERRORE! Non riesco ad aprire il file delle richieste (OLD)");
+                    exit(-1);
+                }
+
+                fileNuovoRichieste = fopen("Dati/TEMP_AppuntamentiRichiesti.txt", "w");
+                if(fileNuovoRichieste == NULL) {
+                    printf("\nERRORE! Non riesco ad aprire il file delle richieste (NEW)");
+                    exit(-1);
+                }
+
+                while(fscanf(fileVecchioRichieste, "%s %[^\n]%*c", stringaCodFiscaleFile, stringaSintomiFile) == 2) {
+
+                    if(strcmp(stringaCodFiscaleFile, codFiscale) == 0) {
+                        continue;
+                    }
+                    else {
+                        fprintf(fileNuovoRichieste, "%s %s\n", stringaCodFiscaleFile, stringaSintomiFile);
+                    }
+
+                }
+
+                fclose(fileNuovoRichieste);
+                fclose(fileVecchioRichieste);
+
+                int statoRimozioneFile = remove("Dati/AppuntamentiRichiesti.txt");
+                int statoRinominaFile = rename("Dati/TEMP_AppuntamentiRichiesti.txt", "Dati/AppuntamentiRichiesti.txt");
+
+                if(statoRimozioneFile == 0 && statoRinominaFile == 0) {
+                    printf("\n\nCancellazione completata!\nTornerai alla pagina principale in 3 secondi...");
+                    Sleep(3000);
+                    return;
+                }
+                else {
+                    printf("\n\nErrore nella cancellazione (%d)\nContattare l'assistenza del Laboratorio.\n\nDEBUG INFO: %s\n\n", errno, strerror(errno));
+                    system("pause");
+                    return;
+                }
+            }
+            case 'N': {
+                printf("\n\nTornerai alla pagina principale in 3 secondi...");
+                Sleep(3000);
+                return;
+            }
+            default: {
+                printf("\n\nOpzione errata. Riprova con S o N e premi INVIO");
+                Sleep(4000);
+                break;
+            }
+        }
+    }
+    while(1);
+}
 
 void mostraPaginaPrincipale(struct paziente datiPazienteHomepage) {
 
@@ -224,7 +376,8 @@ void mostraPaginaPrincipale(struct paziente datiPazienteHomepage) {
         system("cls");
 
         printf("Benvenuto Pagina Principale del Laboratorio di Analisi 'San Nicola'\n\n");
-        printf("*************DATI UTENTE*************\n\n\t%s %s\n Codice Fiscale: %s\n\n", datiPazienteHomepage.nome, datiPazienteHomepage.cognome, datiPazienteHomepage.codiceFiscale);
+        printf("*************DATI UTENTE*************\n\n\t%s %s\n Codice Fiscale: %s\n Stato richiesta: ", datiPazienteHomepage.nome, datiPazienteHomepage.cognome, datiPazienteHomepage.codiceFiscale);
+        aggiornaStatoRichiesta(datiPazienteHomepage.codiceFiscale);
         printf("*************************************");
         printf("\n\nEcco cosa puoi fare: \n\n");
 
@@ -241,22 +394,29 @@ void mostraPaginaPrincipale(struct paziente datiPazienteHomepage) {
 
         switch(opzione) {
             case 1: {
+                int statoRichiesta = controllaSeGiaConfermato(datiPazienteHomepage.codiceFiscale);
 
-                if(controllaSeGiaPrenotato(datiPazienteHomepage.codiceFiscale)) {
+                if (statoRichiesta == 0) {
                     prenotazioneTampone(datiPazienteHomepage.codiceFiscale);
+                    break;
                 }
-                else {
+                else if (statoRichiesta == 1) {
                     printf("\nHai gia' effettuato una richiesta di prenotazione!\nVisualizza o cancella la richiesta dalla pagina principale.");
-                    Sleep(3000);
+                    Sleep(4500);
+                    break;
                 }
-
-                break;
+                else if (statoRichiesta == 2) {
+                    printf("\nLa tua richiesta e' stata accettata!\nVisualizza la data e l'ora dell'appuntamento scegliendo l'opzione 2.");
+                    Sleep(4500);
+                    break;
+                }
             }
             case 2: {
                 visualizzaStatoAppuntamento(datiPazienteHomepage.codiceFiscale);
                 break;
             }
             case 3: {
+                cancellaRichiestaTampone(datiPazienteHomepage.codiceFiscale);
                 break;
             }
             case 4: {
@@ -333,6 +493,8 @@ struct paziente accediComePaziente() {
                 strcpy(accessoDatiPaziente.codiceFiscale, codiceFiscalePrelevatoDaFile);
                 strcpy(accessoDatiPaziente.nome, nomePrelevatoDaFile);
                 strcpy(accessoDatiPaziente.cognome, cognomePrelevatoDaFile);
+
+                accessoDatiPaziente.haEsito = 0;
 
                 printf("\nAccesso effettuato!\nAdesso andrai alla pagina principale");
                 fclose(fileListaUtenti);

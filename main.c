@@ -29,10 +29,6 @@ int main()
         switch(opzione) {
             case 1: {
                 datiGeneraliPaziente = accediComePaziente();
-
-                //temporaneo
-                datiGeneraliPaziente.haEsito = 1;
-
                 mostraPaginaPrincipale(datiGeneraliPaziente);
                 break;
             }

@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1618502133 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\main.c
+1618584266 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\main.c
 	"HeaderPaziente.h"
 	"windows.h"
 
@@ -8,14 +8,16 @@
 	<stdlib.h>
 	<string.h>
 
-1618504782 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\headerpaziente.h
+1618588896 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\headerpaziente.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
-
-1618505787 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\funzionipaziente.c
-	"HeaderPaziente.h"
+	<errno.h>
 	"windows.h"
+	"conio.h"
+
+1618588673 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\funzionipaziente.c
+	"HeaderPaziente.h"
 
 1618387090 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\headergenerale.h
 	<stdio.h>
