@@ -44,9 +44,9 @@ void registrazionePaziente() {
     fileRegistrazione = fopen("Dati/ListaUtenti.txt", "r");
 
     // Sono variabili temporanee per prelevare i righi nel file e verificare se un codice fiscale è già stato usato
-    char stringaPrelevata[17];
-    char stringaPrelevata2[12];
-    char stringaPrelevata3[12];
+    char stringaPrelevata[LEN_CODICEFISCALE];
+    char stringaPrelevata2[LEN_NOME];
+    char stringaPrelevata3[LEN_COGNOME];
     int stringaVerificata = 0;
 
     // Accertiamoci che il File esista, altrimenti va in errore
@@ -160,8 +160,8 @@ int controllaSeGiaPrenotato(char codFiscale[]) {
         exit(-1);
     }
 
-    char stringaCodFiscaleFile[17];
-    char stringaSintomiFile[256];
+    char stringaCodFiscaleFile[LEN_CODICEFISCALE];
+    char stringaSintomiFile[LEN_SINTOMI];
 
     while(fscanf(fileAppuntamentiRichiesti, "%s %[^\n]%*c",stringaCodFiscaleFile, stringaSintomiFile) == 2) {
 
@@ -180,9 +180,9 @@ int controllaSeGiaConfermato(char codFiscale[]) {
 
     FILE *fileAppuntamentoConfermato;
 
-    char stringaCodFiscaleFile[17];
+    char stringaCodFiscaleFile[LEN_CODICEFISCALE];
     int n_giorno;
-    char ora_giorno[11];
+    char ora_giorno[LEN_GIORNATA];
 
     fileAppuntamentoConfermato = fopen("Dati/AppuntamentiConfermati.txt", "r");
 
@@ -215,11 +215,11 @@ int controllaSeGiaConfermato(char codFiscale[]) {
 
 void visualizzaStatoAppuntamento(char codFiscale[]) {
 
-    FILE *TempPf = fopen("Dati/AppuntamentiConfermati.txt", "r");
+    FILE *fileAppuntamentiConfermati = fopen("Dati/AppuntamentiConfermati.txt", "r");
 
-    char stringaCodFiscaleFile[17];
+    char stringaCodFiscaleFile[LEN_CODICEFISCALE];
     int n_giorno;
-    char ora_giorno[11];
+    char ora_giorno[LEN_GIORNATA];
 
     int statoRichiesta = controllaSeGiaConfermato(codFiscale);
 
@@ -235,12 +235,11 @@ void visualizzaStatoAppuntamento(char codFiscale[]) {
             return;
         }
         case 2: {
-            while(fscanf(TempPf, "%s %d %s",stringaCodFiscaleFile, &n_giorno, ora_giorno) == 3) {
+            while(fscanf(fileAppuntamentiConfermati, "%s %d %s",stringaCodFiscaleFile, &n_giorno, ora_giorno) == 3) {
                 if(strcmp(stringaCodFiscaleFile, codFiscale) == 0) {
                     printf("\nAppuntamento confermato!\nDevi andare il Giorno %d di %s\n\n", n_giorno, ora_giorno);
-                    printf("Tra 10 secondi ritornerai nella pagina principale...");
-                    Sleep(10000);
-                    fclose(TempPf);
+                    fclose(fileAppuntamentiConfermati);
+                    system("pause");
                     return;
                 }
             }
@@ -283,8 +282,8 @@ void cancellaRichiestaTampone(char codFiscale[]) {
             break;
         }
         case 2: {
-            printf("\nImpossibile eliminare:\nLa tua richiesta e' stata gia' accettata nel sistema!");
-            Sleep(4000);
+            printf("\nImpossibile eliminare.\nLa tua richiesta e' stata gia' accettata nel sistema!\n\nSe vuoi cancellare il tuo appuntamento, contatta un dipendente del laboratorio.\n\n\n");
+            system("pause");
             return;
         }
         default: {
@@ -310,8 +309,8 @@ void cancellaRichiestaTampone(char codFiscale[]) {
                 FILE *fileNuovoRichieste;
                 FILE *fileVecchioRichieste;
 
-                char stringaCodFiscaleFile[17];
-                char stringaSintomiFile[100];
+                char stringaCodFiscaleFile[LEN_CODICEFISCALE];
+                char stringaSintomiFile[LEN_SINTOMI];
 
                 fileVecchioRichieste = fopen("Dati/AppuntamentiRichiesti.txt", "r");
                 if(fileVecchioRichieste == NULL) {
@@ -348,9 +347,9 @@ void cancellaRichiestaTampone(char codFiscale[]) {
                     return;
                 }
                 else {
-                    printf("\n\nErrore nella cancellazione (%d)\nContattare l'assistenza del Laboratorio.\n\nDEBUG INFO: %s\n\n", errno, strerror(errno));
+                    printf("\n\nErrore nella cancellazione (%d)\nContattare l'assistenza del Laboratorio.\n\nINFO: %s\n\n", errno, strerror(errno));
                     system("pause");
-                    return;
+                    exit(-1);
                 }
             }
             case 'N': {
@@ -453,11 +452,17 @@ void mostraPaginaPrincipale(struct paziente datiPazienteHomepage) {
 
 
 
-void impostaTitoloConsoleConCF(char codFiscale[]) {
-    char titolo[80];
+void impostaTitoloConsoleConCF(char codice[]) {
+    char titolo[LEN_TITOLOCONSOLE];
 
-    strcpy(titolo, "Laboratorio di Analisi - Accesso effettuato come: ");
-    strcat(titolo, codFiscale);
+    if(strlen(codice) > 10) {
+        strcpy(titolo, "Laboratorio di Analisi - Accesso effettuato come: ");
+        strcat(titolo, codice);
+    }
+    else {
+        strcpy(titolo, "Laboratorio di Analisi - Accesso effettuato come: DIP-");
+        strcat(titolo, codice);
+    }
 
     SetConsoleTitle(titolo);
 }
@@ -466,15 +471,15 @@ struct paziente accediComePaziente() {
 
     FILE *fileListaUtenti;
 
-    char accessoCodiceFiscale[17];
-    char accessoPassword[16];
+    char accessoCodiceFiscale[LEN_CODICEFISCALE];
+    char accessoPassword[LEN_PASSWORD];
 
     struct paziente accessoDatiPaziente;
 
-    char codiceFiscalePrelevatoDaFile[17];
-    char nomePrelevatoDaFile[12];
-    char cognomePrelevatoDaFile[12];
-    char passwordPrelevatoDaFile[16];
+    char codiceFiscalePrelevatoDaFile[LEN_CODICEFISCALE];
+    char nomePrelevatoDaFile[LEN_NOME];
+    char cognomePrelevatoDaFile[LEN_COGNOME];
+    char passwordPrelevatoDaFile[LEN_PASSWORD];
 
     do {
         system("cls");
@@ -496,7 +501,7 @@ struct paziente accediComePaziente() {
 
                 accessoDatiPaziente.haEsito = 0;
 
-                printf("\nAccesso effettuato!\nAdesso andrai alla pagina principale");
+                printf("\nAccesso effettuato!\nAdesso andrai alla pagina principale...");
                 fclose(fileListaUtenti);
 
                 Sleep(3000);
@@ -530,7 +535,7 @@ void mostraMessaggioPrenotazione2(char codFiscale[]) {
 
 void prenotazioneTampone(char codFiscale[]) {
 
-    char sintomiPaziente[256];
+    char sintomiPaziente[LEN_SINTOMI];
     char opzione;
 
     FILE *fileAppuntamentiRichiesti;

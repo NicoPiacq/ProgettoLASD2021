@@ -7,12 +7,11 @@
 */
 
 #include "HeaderPaziente.h"
-#include "windows.h"
+#include "HeaderDipendente.h"
 
 int main()
 {
     int opzione = 0;
-    struct paziente datiGeneraliPaziente;
 
     do {
         SetConsoleTitle("Laboratorio di Analisi");
@@ -28,26 +27,41 @@ int main()
 
         switch(opzione) {
             case 1: {
+
+                struct paziente datiGeneraliPaziente;
                 datiGeneraliPaziente = accediComePaziente();
                 mostraPaginaPrincipale(datiGeneraliPaziente);
                 break;
+
             }
             case 2: {
+
+                struct dipendente datiGeneraliDipendente;
+                datiGeneraliDipendente = accediComeDipendente();
+
+                mostraPaginaDipendente(datiGeneraliDipendente);
                 system("cls");
                 break;
+
             }
             case 3: {
+
                 registrazionePaziente();
                 break;
+
             }
             case 4: {
+
                 exit(0);
                 break;
+
             }
             default: {
+
                 printf("\nHai selezionato un'opzione inesistente! Riprova.");
                 Sleep(3000);
                 break;
+
             }
         }
     }

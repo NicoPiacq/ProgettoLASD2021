@@ -1,22 +1,22 @@
 # depslib dependency file v1.0
-1618584266 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\main.c
+1618835750 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\main.c
 	"HeaderPaziente.h"
-	"windows.h"
+	"HeaderDipendente.h"
 
 1618385459 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\definizioni.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 
-1618588896 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\headerpaziente.h
-	<stdio.h>
-	<stdlib.h>
-	<string.h>
-	<errno.h>
+1618839327 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\headerpaziente.h
+	"stdio.h"
+	"stdlib.h"
+	"string.h"
+	"errno.h"
 	"windows.h"
 	"conio.h"
 
-1618588673 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\funzionipaziente.c
+1618839334 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\funzionipaziente.c
 	"HeaderPaziente.h"
 
 1618387090 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\headergenerale.h
@@ -40,5 +40,16 @@
 
 1618567562 source:c:\users\nicola\desktop\uni_files\labasd\laboratorioanalisi\main.c
 	"HeaderPaziente.h"
+	"windows.h"
+
+1618841782 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\funzionidipendente.c
+	"HeaderDipendente.h"
+	"HeaderPaziente.h"
+
+1618840196 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\headerdipendente.h
+	"stdio.h"
+	"stdlib.h"
+	"string.h"
+	"errno.h"
 	"windows.h"
 

@@ -1,9 +1,17 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <errno.h>
+#include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
+#include "errno.h"
 #include "windows.h"
 #include "conio.h"
+
+#define LEN_CODICEFISCALE 17
+#define LEN_NOME 12
+#define LEN_COGNOME 12
+#define LEN_PASSWORD 15
+#define LEN_SINTOMI 128
+#define LEN_GIORNATA 11
+#define LEN_TITOLOCONSOLE 100
 
 
 /*
@@ -11,9 +19,9 @@
 */
 
 struct paziente {
-    char codiceFiscale[17];
-    char nome[12];
-    char cognome[12];
+    char codiceFiscale[LEN_CODICEFISCALE];
+    char nome[LEN_NOME];
+    char cognome[LEN_COGNOME];
     int haEsito;
 };
 
