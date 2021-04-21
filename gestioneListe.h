@@ -34,3 +34,5 @@ void StampaStoricoTutto(listaRisultati *Testa);
 
 
 void OrdinaArrayAppuntamenti(AppuntamentiRichiesti arrayAppuntamenti[], int dimensioneArray);
+
+void StampaArrayAppuntamenti(AppuntamentiRichiesti arrayAppuntamenti[], int dimensioneArray);

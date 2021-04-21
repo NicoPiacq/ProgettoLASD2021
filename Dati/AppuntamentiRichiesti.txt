@@ -1,6 +1,1 @@
-PCQRDM66R17I158W Asintomatico
-PCQNCL99R05G309V Asintomatico
-FFFKDKDJFKGJDKFJ Tachicardia
-CCRLGU69H42F839C Mal di pancia, dolori addominali, fiato corto
-AAABBBCCCDDDEEFF Dolore addominale, fiato corto
-1234567890123456 Febbre
+null (da eliminare prima di avviare, utile solo per github)

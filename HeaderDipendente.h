@@ -6,16 +6,16 @@
 
 #include "DefinizioniGlobali.h"
 
-enum esitoTest {
+typedef enum esitoTest {
     POSITIVO,
     NEGATIVO
-};
+} esitoTampone;
 
-enum orarioTest {
+typedef enum orarioTest {
     MATTINA,
     POMERIGGIO,
     SERA
-};
+} orarioVisita;
 
 struct dipendente {
     char nome[LEN_NOME_DIPENDENTE];
@@ -27,7 +27,6 @@ struct dipendente accediComeDipendente();
 void mostraPaginaDipendente();
 
 void visualizzaStoricoTest();
-void stampaStorico();
 
 void visualizzaRichiesteTamponi();
 
@@ -37,3 +36,5 @@ void aggiungiNuovoAppuntamentoConfermato();
 int verificaCodiceFiscale(char[]);
 
 void rimuoviAppuntamentoConfermato();
+
+const char* AssegnaOrarioTest(int);

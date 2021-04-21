@@ -91,6 +91,98 @@ int verificaCodiceFiscale(char codFiscale[]) {
     return statoRichiesta;
 }
 
+void visualizzaStoricoTest() {
+
+    // INIZIAMO AD APRIRE IL FILE DA DOVE LEGGERE GLI ESITI
+    FILE *fileEsitoTest;
+    fileEsitoTest = fopen("Dati/StoricoTest.txt", "r");
+
+    // DICHIARIAMO LA TESTA DELLA LISTA
+    listaRisultati * testaListaRisultati;
+
+    // VERIFICHIAMO PRIMA SE SONO PRESENTI DEI TEST: SE IL FILE HA DIMENSIONE 0 BYTE, USCIRA' DALLA FUNZIONE STAMPANDO UN ERRORE IN CONSOLE.
+    fseek(fileEsitoTest, 0L, SEEK_END);
+    long int dimensioneFile = ftell(fileEsitoTest);
+
+    if(dimensioneFile <= 0) {
+        printf("\nImpossibile proseguire!\nLo storico dei test e' vuoto.");
+        fclose(fileEsitoTest);
+        Sleep(4500);
+        return;
+    }
+
+    // SE IL FILE CONTIENE (PRESUMENDO CORRETTO) TEST EFFETTUATI ALLORA LI RICOPIEREMO IN UNA LISTA SEMPLICE
+
+    // PRIMA PERO' "RIAVVIAMO" IL PUNTATORE DEL FILE E RIPORTIAMOLO ALLA PRIMA POSIZIONE
+    rewind(fileEsitoTest);
+
+    // INIZIALIZZIAMO LA TESTA
+    testaListaRisultati = CreaTestaRisultati();
+
+    // CREIAMO LE VARIABILI DOVE ASSEGNARE LE STRINGHE LETTE DAL FILE
+    char codiceFiscalePrelevatoDaFile[LEN_CODICEFISCALE];
+    char dataTestPrelevatoDaFile[LEN_DATATEST];
+    char orarioTestPrelevatoDaFile[LEN_ORARIOTEST];
+    char esitoTestPrelevatoDaFile[LEN_ESITO];
+
+    // CREIAMO I NODI E INSERIAMOLI DIRETTAMENTE IN CODA
+    while(fscanf(fileEsitoTest, "%s %s %s %s", codiceFiscalePrelevatoDaFile, dataTestPrelevatoDaFile, orarioTestPrelevatoDaFile, esitoTestPrelevatoDaFile) == 4) {
+            InserimentoInCodaRisultati(testaListaRisultati, codiceFiscalePrelevatoDaFile, dataTestPrelevatoDaFile, orarioTestPrelevatoDaFile, esitoTestPrelevatoDaFile);
+    }
+
+    // CHIUDIAMO IL FILE DATO CHE SERVE UNA SOLA LETTURA (USIAMO, APPUNTO, LE LISTE PER EVITARE DI LEGGERE PIU' VOLTE IL FILE)
+    fclose(fileEsitoTest);
+
+    int opzione;
+    char dataTest[LEN_DATATEST];
+
+    do {
+        system("cls");
+
+        printf("Questo strumento permette di visualizzare lo storico dei Test effettuati.\nIn base alle esigenze, si possono scegliere due modalita' di scansione.\n\n");
+
+        printf("Modalita' di scansione disponibili:\n1. Visualizza lo storico in una data specifica\n2. Visualizza lo storico da una data di inizio\n3. Visualizza tutto lo storico\n\n4. Ritorna indietro\n\n");
+        printf("Scegliere l'opzione: ");
+        scanf("%d",&opzione);
+
+        switch(opzione) {
+            case 1: {
+                printf("\nInserire la data: ");
+                scanf("%s",dataTest);
+
+                StampaStoricoDataSpecifica(testaListaRisultati, dataTest);
+
+                printf("\n\n");
+                system("pause");
+
+                return;
+            }
+            case 2: {
+
+                break;
+            }
+            case 3: {
+                StampaStoricoTutto(testaListaRisultati);
+
+                printf("\n\n");
+                system("pause");
+
+                break;
+            }
+            case 4: {
+
+                return;
+            }
+            default: {
+                printf("\n\nOpzione non esistente.");
+                opzione = 0;
+                break;
+            }
+        }
+    }
+    while(1);
+}
+
 void aggiungiNuovoAppuntamentoConfermato() {
 
     int statoAppuntamento;
@@ -291,7 +383,7 @@ int opzione = 0;
         printf("\n\nEcco cosa puoi fare: \n\n");
 
 
-        printf("1. Visualizza storico Test effettuati\n2. Visualizza richieste appuntamenti\n3. Visualizza appuntamenti fissati\n4. Aggiungi appuntamento\n5. Cancella appuntamento\n6. Esegui il logout");
+        printf("1. Visualizza storico Test effettuati\n2. Visualizza e conferma richieste appuntamenti\n3. Visualizza appuntamenti fissati\n4. Aggiungi appuntamento\n5. Cancella appuntamento\n6. Esegui il logout");
 
 
         printf("\n\nScegliere un'opzione: ");
@@ -334,104 +426,47 @@ int opzione = 0;
 
 }
 
+const char* AssegnaOrarioTest(int n) {
 
-void visualizzaStoricoTest() {
-
-    // INIZIAMO AD APRIRE IL FILE DA DOVE LEGGERE GLI ESITI
-    FILE *fileEsitoTest;
-    fileEsitoTest = fopen("Dati/StoricoTest.txt", "r");
-
-    // DICHIARIAMO LA TESTA DELLA LISTA
-    listaRisultati * testaListaRisultati;
-
-    // VERIFICHIAMO PRIMA SE SONO PRESENTI DEI TEST: SE IL FILE HA DIMENSIONE 0 BYTE, USCIRA' DALLA FUNZIONE STAMPANDO UN ERRORE IN CONSOLE.
-    fseek(fileEsitoTest, 0L, SEEK_END);
-    long int dimensioneFile = ftell(fileEsitoTest);
-
-    if(dimensioneFile <= 0) {
-        printf("\nImpossibile proseguire!\nLo storico dei test e' vuoto.");
-        fclose(fileEsitoTest);
-        Sleep(4500);
-        return;
+    switch(n) {
+        case 0:
+        case 1:
+            return "Mattina";
+        case 2:
+        case 3:
+            return "Pomeriggio";
+        case 4:
+        case 5:
+            return "Sera";
     }
 
-    // SE IL FILE CONTIENE (PRESUMENDO CORRETTO) TEST EFFETTUATI ALLORA LI RICOPIEREMO IN UNA LISTA SEMPLICE
-
-    // PRIMA PERO' "RIAVVIAMO" IL PUNTATORE DEL FILE E RIPORTIAMOLO ALLA PRIMA POSIZIONE
-    rewind(fileEsitoTest);
-
-    // INIZIALIZZIAMO LA TESTA
-    testaListaRisultati = CreaTestaRisultati();
-
-    // CREIAMO LE VARIABILI DOVE ASSEGNARE LE STRINGHE LETTE DAL FILE
-    char codiceFiscalePrelevatoDaFile[LEN_CODICEFISCALE];
-    char dataTestPrelevatoDaFile[LEN_DATATEST];
-    char orarioTestPrelevatoDaFile[LEN_ORARIOTEST];
-    char esitoTestPrelevatoDaFile[LEN_ESITO];
-
-    // CREIAMO I NODI E INSERIAMOLI DIRETTAMENTE IN CODA
-    while(fscanf(fileEsitoTest, "%s %s %s %s", codiceFiscalePrelevatoDaFile, dataTestPrelevatoDaFile, orarioTestPrelevatoDaFile, esitoTestPrelevatoDaFile) == 4) {
-            InserimentoInCodaRisultati(testaListaRisultati, codiceFiscalePrelevatoDaFile, dataTestPrelevatoDaFile, orarioTestPrelevatoDaFile, esitoTestPrelevatoDaFile);
-    }
-
-    // CHIUDIAMO IL FILE DATO CHE SERVE UNA SOLA LETTURA (USIAMO, APPUNTO, LE LISTE PER EVITARE DI LEGGERE PIU' VOLTE IL FILE)
-    fclose(fileEsitoTest);
-
-    int opzione;
-    char dataTest[LEN_DATATEST];
-
-    do {
-        system("cls");
-
-        printf("Questo strumento permette di visualizzare lo storico dei Test effettuati.\nIn base alle esigenze, si possono scegliere due modalita' di scansione.\n\n");
-
-        printf("Modalita' di scansione disponibili:\n1. Visualizza lo storico in una data specifica\n2. Visualizza lo storico da una data di inizio\n3. Visualizza tutto lo storico\n\n4. Ritorna indietro\n\n");
-        printf("Scegliere l'opzione: ");
-        scanf("%d",&opzione);
-
-        switch(opzione) {
-            case 1: {
-                printf("\nInserire la data: ");
-                scanf("%s",dataTest);
-
-                StampaStoricoDataSpecifica(testaListaRisultati, dataTest);
-
-                printf("\n\n");
-                system("pause");
-
-                return;
-            }
-            case 2: {
-
-                break;
-            }
-            case 3: {
-                StampaStoricoTutto(testaListaRisultati);
-
-                printf("\n\n");
-                system("pause");
-
-                break;
-            }
-            case 4: {
-
-                return;
-            }
-            default: {
-                printf("\n\nOpzione non esistente.");
-                opzione = 0;
-                break;
-            }
-        }
-    }
-    while(1);
+    return "Mattina";
 }
 
+void ConfermaAppuntamentiRichiesti(AppuntamentiRichiesti arrayAppuntamenti[], int dimensioneArray) {
+
+    FILE *fileAppuntamentiConfermati = fopen("Dati/AppuntamentiConfermati.txt", "a");
+    int indice = 0;
+    int indiceGiornata = 0;
+
+    for(indice = 0; indice < dimensioneArray; indice++) {
+
+        fprintf(fileAppuntamentiConfermati, "%s %s %s %s\n", arrayAppuntamenti[indice].codiceFiscale, arrayAppuntamenti[indice].sintomiPaziente, "22/04/2021", AssegnaOrarioTest(indiceGiornata));
+
+        if(indiceGiornata == 5)
+            indiceGiornata = 0;
+        else
+            indiceGiornata++;
+    }
+
+    fclose(fileAppuntamentiConfermati);
+
+}
 
 void visualizzaRichiesteTamponi() {
 
     system("cls");
-    printf("debug visualizzaRichiesteTamponi\n\n");
+    printf("Gli appuntamenti richiesti visualizzati qui saranno automaticamente confermati!\n\n");
 
     FILE *fileAppuntamentiRichiesti;
     fileAppuntamentiRichiesti = fopen("Dati/AppuntamentiRichiesti.txt", "r");
@@ -457,15 +492,18 @@ void visualizzaRichiesteTamponi() {
 
     OrdinaArrayAppuntamenti(appuntamentiRichiesti, numeroAppuntamenti);
 
-    indice = 0;
+    StampaArrayAppuntamenti(appuntamentiRichiesti, numeroAppuntamenti-1);
 
-    printf("\n\n");
+    ConfermaAppuntamentiRichiesti(appuntamentiRichiesti, numeroAppuntamenti);
 
-    for(indice = 0; indice < numeroAppuntamenti; indice++) {
-        printf("%s %s\n", appuntamentiRichiesti[indice].codiceFiscale, appuntamentiRichiesti[indice].sintomiPaziente);
-    }
+    fclose(fileAppuntamentiRichiesti);
 
-    printf("\n\n");
+    remove("Dati/AppuntamentiRichiesti.txt");
+
+    fileAppuntamentiRichiesti = fopen("Dati/AppuntamentiRichiesti.txt", "w");
+    fclose(fileAppuntamentiRichiesti);
+
+    printf("\n\nGli appuntamenti qui visualizzati sono stati automaticamente confermati!\n\n");
 
     system("pause");
 

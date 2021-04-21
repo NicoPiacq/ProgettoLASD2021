@@ -17,6 +17,7 @@ int main()
         SetConsoleTitle("Laboratorio di Analisi");
         opzione = 0;
         system("cls");
+
         printf("Benvenuto nel Laboratorio di Analisi Tamponi Molecolari 'San Nicola'.\nQuesto software consente la prenotazione di un tampone\ne la verifica dell'esito direttamente da PC!\n");
         printf("\nSe sei un utente gia' registrato:\n");
         printf("1. Accesso per i pazienti\n2. Accesso per i dipendenti\n");
@@ -27,7 +28,6 @@ int main()
 
         switch(opzione) {
             case 1: {
-
                 struct paziente datiGeneraliPaziente;
                 datiGeneraliPaziente = accediComePaziente();
                 mostraPaginaPrincipale(datiGeneraliPaziente);
@@ -45,19 +45,16 @@ int main()
 
             }
             case 3: {
-
                 registrazionePaziente();
                 break;
 
             }
             case 4: {
-
                 exit(0);
                 break;
 
             }
             default: {
-
                 printf("\nHai selezionato un'opzione inesistente! Riprova.");
                 Sleep(3000);
                 break;

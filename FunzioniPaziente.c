@@ -181,31 +181,40 @@ int controllaSeGiaConfermato(char codFiscale[]) {
     FILE *fileAppuntamentoConfermato;
 
     char stringaCodFiscaleFile[LEN_CODICEFISCALE];
-    int n_giorno;
+    char dataTest[LEN_DATATEST];
     char ora_giorno[LEN_GIORNATA];
+    char sintomiPaziente[LEN_SINTOMI];
 
     fileAppuntamentoConfermato = fopen("Dati/AppuntamentiConfermati.txt", "r");
 
     if(fileAppuntamentoConfermato == NULL) {
-        printf("ERRORE! Non riesco a trovare il file degli appuntamenti confermati!");
+        printf("ERRORE! Non riesco a trovare il file degli appuntamenti confermati!\n\n");
         exit(-1);
     }
 
-    while(fscanf(fileAppuntamentoConfermato, "%s %d %s",stringaCodFiscaleFile, &n_giorno, ora_giorno) == 3) {
+    while(fscanf(fileAppuntamentoConfermato, "%s %[^;]%*c %s %s", stringaCodFiscaleFile, sintomiPaziente, dataTest, ora_giorno) == 4) {
         if(strcmp(stringaCodFiscaleFile, codFiscale) == 0) {
             fclose(fileAppuntamentoConfermato);
             return 2;
         }
-        else {
+    }
 
-            if(controllaSeGiaPrenotato(codFiscale) == 0) {
-                fclose(fileAppuntamentoConfermato);
-                return 0;
-            }
+    if(controllaSeGiaPrenotato(codFiscale) == 0) {
+        fclose(fileAppuntamentoConfermato);
+        return 0;
+    } else {
+        fclose(fileAppuntamentoConfermato);
+        return 1;
+    }
 
-            fclose(fileAppuntamentoConfermato);
-            return 1;
-        }
+
+    rewind(fileAppuntamentoConfermato);
+    fseek(fileAppuntamentoConfermato, 0L, SEEK_END);
+    long int dimensioneFile = ftell(fileAppuntamentoConfermato);
+
+    if(dimensioneFile <= 0) {
+        fclose(fileAppuntamentoConfermato);
+        return 0;
     }
 
     fclose(fileAppuntamentoConfermato);
@@ -218,8 +227,9 @@ void visualizzaStatoAppuntamento(char codFiscale[]) {
     FILE *fileAppuntamentiConfermati = fopen("Dati/AppuntamentiConfermati.txt", "r");
 
     char stringaCodFiscaleFile[LEN_CODICEFISCALE];
-    int n_giorno;
+    char dataTest[LEN_DATATEST];
     char ora_giorno[LEN_GIORNATA];
+    char sintomiPaziente[LEN_SINTOMI];
 
     int statoRichiesta = controllaSeGiaConfermato(codFiscale);
 
@@ -235,9 +245,9 @@ void visualizzaStatoAppuntamento(char codFiscale[]) {
             return;
         }
         case 2: {
-            while(fscanf(fileAppuntamentiConfermati, "%s %d %s",stringaCodFiscaleFile, &n_giorno, ora_giorno) == 3) {
+            while(fscanf(fileAppuntamentiConfermati, "%s %[^;]%*c %s %s", stringaCodFiscaleFile, sintomiPaziente, dataTest, ora_giorno) == 4) {
                 if(strcmp(stringaCodFiscaleFile, codFiscale) == 0) {
-                    printf("\nAppuntamento confermato!\nDevi andare il Giorno %d di %s\n\n", n_giorno, ora_giorno);
+                    printf("\nAppuntamento confermato!\nDevi andare il Giorno %s di %s\n\n", dataTest, ora_giorno);
                     fclose(fileAppuntamentiConfermati);
                     system("pause");
                     return;
@@ -575,13 +585,13 @@ void prenotazioneTampone(char codFiscale[]) {
                             printf("\nChe sintomi hai?:\n");
                             scanf(" %[^\n]%*c",sintomiPaziente);
                             printf("\n");
-                            fprintf(fileAppuntamentiRichiesti, "%s %s\n",codFiscale, sintomiPaziente);
+                            fprintf(fileAppuntamentiRichiesti, "%s %s;\n",codFiscale, sintomiPaziente);
                             break;
                         }
 
                         case 'N': {
                             printf("\nSarai registrato come asintomatico!\nTieni conto che gli asintomatici hanno meno priorita'.");
-                            fprintf(fileAppuntamentiRichiesti, "%s Asintomatico\n", codFiscale);
+                            fprintf(fileAppuntamentiRichiesti, "%s Asintomatico;\n", codFiscale);
                             break;
                         }
 
@@ -594,11 +604,10 @@ void prenotazioneTampone(char codFiscale[]) {
                     }
 
                     fclose(fileAppuntamentiRichiesti);
-                    printf("\n\nAppuntamento richiesto con successo.\nPotrai visualizzare la richiesta effettuata tramite la pagina principale oppure,\ncancellare la richiesta prima che questa viene confermata.");
+                    printf("\n\nAppuntamento richiesto con successo.\nPotrai visualizzare la richiesta effettuata tramite la pagina principale oppure,\ncancellare la richiesta prima che questa viene confermata.\n\n");
                     Sleep(3000);
 
-                    printf("\n\nPremi INVIO per proseguire...");
-                    getchar();
+                    system("pause");
                     return;
                 }
                 while(1);

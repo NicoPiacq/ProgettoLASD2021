@@ -183,3 +183,17 @@ void OrdinaArrayAppuntamenti(AppuntamentiRichiesti arrayAppuntamenti[], int dime
         indice1++;
     }
 }
+
+
+void StampaArrayAppuntamenti(AppuntamentiRichiesti arrayAppuntamenti[], int dimensioneArray) {
+
+    if(dimensioneArray > -1) {
+
+        StampaArrayAppuntamenti(arrayAppuntamenti, dimensioneArray-1);
+
+        printf("| ================================================ |\n\n");
+        printf("\tCF: %-38s \n \tSINTOMI: %-34s \n\n", arrayAppuntamenti[dimensioneArray].codiceFiscale, arrayAppuntamenti[dimensioneArray].sintomiPaziente);
+
+    }
+
+}
