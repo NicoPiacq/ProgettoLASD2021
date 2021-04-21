@@ -4,10 +4,18 @@
 #include "errno.h"
 #include "windows.h"
 
-#define LEN_NOME_DIPENDENTE 12
-#define LEN_COGNOME_DIPENDENTE 12
-#define LEN_USERID_DIPENDENTE 10
-#define LEN_PASSWORD_DIPENDENTE 15
+#include "DefinizioniGlobali.h"
+
+enum esitoTest {
+    POSITIVO,
+    NEGATIVO
+};
+
+enum orarioTest {
+    MATTINA,
+    POMERIGGIO,
+    SERA
+};
 
 struct dipendente {
     char nome[LEN_NOME_DIPENDENTE];
@@ -15,18 +23,11 @@ struct dipendente {
     char userid[LEN_USERID_DIPENDENTE];
 };
 
-struct listaTesta {
-
-};
-
-struct listaNodo {
-
-};
-
 struct dipendente accediComeDipendente();
 void mostraPaginaDipendente();
 
 void visualizzaStoricoTest();
+void stampaStorico();
 
 void visualizzaRichiesteTamponi();
 

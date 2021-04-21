@@ -1,5 +1,6 @@
 #include "HeaderDipendente.h"
 #include "HeaderPaziente.h"
+#include "gestioneListe.h"
 
 struct dipendente accediComeDipendente() {
 
@@ -298,11 +299,11 @@ int opzione = 0;
 
         switch(opzione) {
             case 1: {
-
+                visualizzaStoricoTest();
                 break;
             }
             case 2: {
-
+                visualizzaRichiesteTamponi();
                 break;
             }
             case 3: {
@@ -330,5 +331,142 @@ int opzione = 0;
         }
     }
     while(1);
+
+}
+
+
+void visualizzaStoricoTest() {
+
+    // INIZIAMO AD APRIRE IL FILE DA DOVE LEGGERE GLI ESITI
+    FILE *fileEsitoTest;
+    fileEsitoTest = fopen("Dati/StoricoTest.txt", "r");
+
+    // DICHIARIAMO LA TESTA DELLA LISTA
+    listaRisultati * testaListaRisultati;
+
+    // VERIFICHIAMO PRIMA SE SONO PRESENTI DEI TEST: SE IL FILE HA DIMENSIONE 0 BYTE, USCIRA' DALLA FUNZIONE STAMPANDO UN ERRORE IN CONSOLE.
+    fseek(fileEsitoTest, 0L, SEEK_END);
+    long int dimensioneFile = ftell(fileEsitoTest);
+
+    if(dimensioneFile <= 0) {
+        printf("\nImpossibile proseguire!\nLo storico dei test e' vuoto.");
+        fclose(fileEsitoTest);
+        Sleep(4500);
+        return;
+    }
+
+    // SE IL FILE CONTIENE (PRESUMENDO CORRETTO) TEST EFFETTUATI ALLORA LI RICOPIEREMO IN UNA LISTA SEMPLICE
+
+    // PRIMA PERO' "RIAVVIAMO" IL PUNTATORE DEL FILE E RIPORTIAMOLO ALLA PRIMA POSIZIONE
+    rewind(fileEsitoTest);
+
+    // INIZIALIZZIAMO LA TESTA
+    testaListaRisultati = CreaTestaRisultati();
+
+    // CREIAMO LE VARIABILI DOVE ASSEGNARE LE STRINGHE LETTE DAL FILE
+    char codiceFiscalePrelevatoDaFile[LEN_CODICEFISCALE];
+    char dataTestPrelevatoDaFile[LEN_DATATEST];
+    char orarioTestPrelevatoDaFile[LEN_ORARIOTEST];
+    char esitoTestPrelevatoDaFile[LEN_ESITO];
+
+    // CREIAMO I NODI E INSERIAMOLI DIRETTAMENTE IN CODA
+    while(fscanf(fileEsitoTest, "%s %s %s %s", codiceFiscalePrelevatoDaFile, dataTestPrelevatoDaFile, orarioTestPrelevatoDaFile, esitoTestPrelevatoDaFile) == 4) {
+            InserimentoInCodaRisultati(testaListaRisultati, codiceFiscalePrelevatoDaFile, dataTestPrelevatoDaFile, orarioTestPrelevatoDaFile, esitoTestPrelevatoDaFile);
+    }
+
+    // CHIUDIAMO IL FILE DATO CHE SERVE UNA SOLA LETTURA (USIAMO, APPUNTO, LE LISTE PER EVITARE DI LEGGERE PIU' VOLTE IL FILE)
+    fclose(fileEsitoTest);
+
+    int opzione;
+    char dataTest[LEN_DATATEST];
+
+    do {
+        system("cls");
+
+        printf("Questo strumento permette di visualizzare lo storico dei Test effettuati.\nIn base alle esigenze, si possono scegliere due modalita' di scansione.\n\n");
+
+        printf("Modalita' di scansione disponibili:\n1. Visualizza lo storico in una data specifica\n2. Visualizza lo storico da una data di inizio\n3. Visualizza tutto lo storico\n\n4. Ritorna indietro\n\n");
+        printf("Scegliere l'opzione: ");
+        scanf("%d",&opzione);
+
+        switch(opzione) {
+            case 1: {
+                printf("\nInserire la data: ");
+                scanf("%s",dataTest);
+
+                StampaStoricoDataSpecifica(testaListaRisultati, dataTest);
+
+                printf("\n\n");
+                system("pause");
+
+                return;
+            }
+            case 2: {
+
+                break;
+            }
+            case 3: {
+                StampaStoricoTutto(testaListaRisultati);
+
+                printf("\n\n");
+                system("pause");
+
+                break;
+            }
+            case 4: {
+
+                return;
+            }
+            default: {
+                printf("\n\nOpzione non esistente.");
+                opzione = 0;
+                break;
+            }
+        }
+    }
+    while(1);
+}
+
+
+void visualizzaRichiesteTamponi() {
+
+    system("cls");
+    printf("debug visualizzaRichiesteTamponi\n\n");
+
+    FILE *fileAppuntamentiRichiesti;
+    fileAppuntamentiRichiesti = fopen("Dati/AppuntamentiRichiesti.txt", "r");
+
+    char stringaCodFiscaleFile[LEN_CODICEFISCALE];
+    char stringaSintomiFile[LEN_SINTOMI];
+
+    int numeroAppuntamenti = 0;
+    int indice = 0;
+
+    while(fscanf(fileAppuntamentiRichiesti, "%s %[^\n]%*c", stringaCodFiscaleFile, stringaSintomiFile) == 2) {
+            numeroAppuntamenti++;
+    }
+
+    AppuntamentiRichiesti appuntamentiRichiesti[numeroAppuntamenti];
+    rewind(fileAppuntamentiRichiesti);
+
+    while(fscanf(fileAppuntamentiRichiesti, "%s %[^\n]%*c", stringaCodFiscaleFile, stringaSintomiFile) == 2) {
+            strcpy(appuntamentiRichiesti[indice].codiceFiscale, stringaCodFiscaleFile);
+            strcpy(appuntamentiRichiesti[indice].sintomiPaziente, stringaSintomiFile);
+            indice++;
+    }
+
+    OrdinaArrayAppuntamenti(appuntamentiRichiesti, numeroAppuntamenti);
+
+    indice = 0;
+
+    printf("\n\n");
+
+    for(indice = 0; indice < numeroAppuntamenti; indice++) {
+        printf("%s %s\n", appuntamentiRichiesti[indice].codiceFiscale, appuntamentiRichiesti[indice].sintomiPaziente);
+    }
+
+    printf("\n\n");
+
+    system("pause");
 
 }

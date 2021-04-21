@@ -4,14 +4,7 @@
 #include "errno.h"
 #include "windows.h"
 #include "conio.h"
-
-#define LEN_CODICEFISCALE 17
-#define LEN_NOME 12
-#define LEN_COGNOME 12
-#define LEN_PASSWORD 15
-#define LEN_SINTOMI 128
-#define LEN_GIORNATA 11
-#define LEN_TITOLOCONSOLE 100
+#include "DefinizioniGlobali.h"
 
 
 /*
@@ -36,6 +29,7 @@ int generaRandomPassword();
 
 void prenotazioneTampone(char[]);
 int controllaSeGiaPrenotato(char[]);
+int controllaSeGiaConfermato(char[]);
 
 void visualizzaStatoAppuntamento();
 void cancellaRichiestaTampone(char[]);

@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1618835750 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\main.c
+1618924949 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\main.c
 	"HeaderPaziente.h"
 	"HeaderDipendente.h"
 
@@ -8,13 +8,14 @@
 	<stdlib.h>
 	<string.h>
 
-1618839327 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\headerpaziente.h
+1619010326 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\headerpaziente.h
 	"stdio.h"
 	"stdlib.h"
 	"string.h"
 	"errno.h"
 	"windows.h"
 	"conio.h"
+	"DefinizioniGlobali.h"
 
 1618839334 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\funzionipaziente.c
 	"HeaderPaziente.h"
@@ -42,14 +43,27 @@
 	"HeaderPaziente.h"
 	"windows.h"
 
-1618841782 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\funzionidipendente.c
+1619014734 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\funzionidipendente.c
 	"HeaderDipendente.h"
 	"HeaderPaziente.h"
+	"gestioneListe.h"
 
-1618840196 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\headerdipendente.h
+1619010394 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\headerdipendente.h
 	"stdio.h"
 	"stdlib.h"
 	"string.h"
 	"errno.h"
 	"windows.h"
+	"DefinizioniGlobali.h"
+
+1619011737 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\gestioneliste.h
+	"stdio.h"
+	"stdlib.h"
+	"string.h"
+	"DefinizioniGlobali.h"
+
+1619016259 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\funzioniliste.c
+	"gestioneListe.h"
+
+1619010220 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\definizioniglobali.h
 

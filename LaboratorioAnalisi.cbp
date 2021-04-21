@@ -31,6 +31,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="DefinizioniGlobali.h" />
 		<Unit filename="FunzioniDipendente.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -39,6 +40,10 @@
 		</Unit>
 		<Unit filename="HeaderDipendente.h" />
 		<Unit filename="HeaderPaziente.h" />
+		<Unit filename="funzioniListe.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="gestioneListe.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
