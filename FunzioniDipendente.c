@@ -1,6 +1,7 @@
 #include "HeaderDipendente.h"
 #include "HeaderPaziente.h"
 #include "gestioneListe.h"
+#include "gestioneDate.h"
 
 struct dipendente accediComeDipendente() {
 
@@ -141,7 +142,7 @@ void visualizzaStoricoTest() {
 
         printf("Questo strumento permette di visualizzare lo storico dei Test effettuati.\nIn base alle esigenze, si possono scegliere due modalita' di scansione.\n\n");
 
-        printf("Modalita' di scansione disponibili:\n1. Visualizza lo storico in una data specifica\n2. Visualizza lo storico da una data di inizio\n3. Visualizza tutto lo storico\n\n4. Ritorna indietro\n\n");
+        printf("Modalita' di scansione disponibili:\n1. Visualizza lo storico in una data specifica\n2. Visualizza tutto lo storico\n\n3. Ritorna indietro\n\n");
         printf("Scegliere l'opzione: ");
         scanf("%d",&opzione);
 
@@ -158,10 +159,6 @@ void visualizzaStoricoTest() {
                 return;
             }
             case 2: {
-
-                break;
-            }
-            case 3: {
                 StampaStoricoTutto(testaListaRisultati);
 
                 printf("\n\n");
@@ -169,8 +166,7 @@ void visualizzaStoricoTest() {
 
                 break;
             }
-            case 4: {
-
+            case 3: {
                 return;
             }
             default: {
@@ -204,18 +200,19 @@ void aggiungiNuovoAppuntamentoConfermato() {
             case 0: {
 
                 FILE *fileAppuntamentiConfermati;
-                int giornoAppuntamento;
+                char giornoAppuntamento[LEN_DATATEST];
                 char orarioAppuntamento[LEN_GIORNATA];
+                char sintomiPaziente[LEN_SINTOMI];
 
                 fileAppuntamentiConfermati = fopen("Dati/AppuntamentiConfermati.txt", "w");
 
                 printf("\nGiorno della prenotazione: ");
-                scanf("%d",&giornoAppuntamento);
+                scanf("%s", giornoAppuntamento);
 
                 printf("\nOra della prenotazione (Mattina/Pomeriggio/Sera): ");
-                scanf("%s",orarioAppuntamento);
+                scanf("%s", orarioAppuntamento);
 
-                fprintf(fileAppuntamentiConfermati, "%s %d %s\n", codiceFiscalePaziente, giornoAppuntamento, orarioAppuntamento);
+                fprintf(fileAppuntamentiConfermati, "%s %s; %s %s\n", codiceFiscalePaziente, sintomiPaziente, giornoAppuntamento, orarioAppuntamento);
 
                 fclose(fileAppuntamentiConfermati);
 
@@ -383,7 +380,7 @@ int opzione = 0;
         printf("\n\nEcco cosa puoi fare: \n\n");
 
 
-        printf("1. Visualizza storico Test effettuati\n2. Visualizza e conferma richieste appuntamenti\n3. Visualizza appuntamenti fissati\n4. Aggiungi appuntamento\n5. Cancella appuntamento\n6. Esegui il logout");
+        printf("1. Visualizza storico Test effettuati\n2. Visualizza e conferma richieste appuntamenti\n3. Visualizza appuntamenti fissati\n4. Aggiungi appuntamento\n5. Cancella appuntamento\n6. Logout e conferma la giornata");
 
 
         printf("\n\nScegliere un'opzione: ");
@@ -399,7 +396,7 @@ int opzione = 0;
                 break;
             }
             case 3: {
-
+                visualizzaAppuntamentiConfermati();
                 break;
             }
             case 4: {
@@ -426,50 +423,114 @@ int opzione = 0;
 
 }
 
-const char* AssegnaOrarioTest(int n) {
-
-    switch(n) {
-        case 0:
-        case 1:
-            return "Mattina";
-        case 2:
-        case 3:
-            return "Pomeriggio";
-        case 4:
-        case 5:
-            return "Sera";
-    }
-
-    return "Mattina";
-}
-
 void ConfermaAppuntamentiRichiesti(AppuntamentiRichiesti arrayAppuntamenti[], int dimensioneArray) {
 
     FILE *fileAppuntamentiConfermati = fopen("Dati/AppuntamentiConfermati.txt", "a");
+
     int indice = 0;
     int indiceGiornata = 0;
+    char dataGiornaliera[LEN_DATATEST];
+    char ultimaDataTest[LEN_DATATEST];
+
+    strcpy(dataGiornaliera, RecuperaDataGiornalieraDaConfigurazione());
+    strcpy(ultimaDataTest, AssegnaGiornataTest());
+
+    FILE *fileConfigurazione = fopen("Dati/FileConfigurazione.txt", "r");
+    fseek(fileConfigurazione, 72, SEEK_SET);
+    fscanf(fileConfigurazione, "%d", &indiceGiornata);
+    fclose(fileConfigurazione);
 
     for(indice = 0; indice < dimensioneArray; indice++) {
 
-        fprintf(fileAppuntamentiConfermati, "%s %s %s %s\n", arrayAppuntamenti[indice].codiceFiscale, arrayAppuntamenti[indice].sintomiPaziente, "22/04/2021", AssegnaOrarioTest(indiceGiornata));
+        fprintf(fileAppuntamentiConfermati, "%s %s %s %s\n", arrayAppuntamenti[indice].codiceFiscale, arrayAppuntamenti[indice].sintomiPaziente, AssegnaGiornataTest(), AssegnaOrarioTest(indiceGiornata));
 
-        if(indiceGiornata == 5)
+        if(indiceGiornata == 5) {
+            IncrementaGiornataTest();
             indiceGiornata = 0;
+        }
         else
             indiceGiornata++;
     }
 
+    FILE *fileConfigurazioneNuovo = fopen("Dati/FileConfigurazione.txt", "w");
+    fprintf(fileConfigurazioneNuovo, "dataGiornaliera= %s\n", dataGiornaliera);
+    fprintf(fileConfigurazioneNuovo, "dataUltimaRegistrata= %s\n", ultimaDataTest);
+    fprintf(fileConfigurazioneNuovo, "dataSlot= %d", indiceGiornata);
+
+    fclose(fileConfigurazioneNuovo);
     fclose(fileAppuntamentiConfermati);
+
+}
+
+void visualizzaAppuntamentiConfermati() {
+
+    FILE *fileAppuntamentiConfermati;
+    fileAppuntamentiConfermati = fopen("Dati/AppuntamentiConfermati.txt", "r");
+
+    if(fileAppuntamentiConfermati == NULL) {
+        printf("\n\nErrore nell'apertura del file AppuntamentiConfermati.txt!\nVerifica che sia presente nella cartella Dati\n\n");
+        exit(-1);
+    }
+
+    // VERIFICHIAMO PRIMA SE SONO PRESENTI APPUNTAMENTI: SE IL FILE HA DIMENSIONE 0 BYTE, USCIRA' DALLA FUNZIONE STAMPANDO UN ERRORE IN CONSOLE.
+    fseek(fileAppuntamentiConfermati, 0L, SEEK_END);
+    long int dimensioneFile = ftell(fileAppuntamentiConfermati);
+
+    // CONTROLLIAMO LA DIMENSIONE DEL FILE
+    if(dimensioneFile <= 0) {
+        printf("\nNon c'e' nessun appuntamento confermato!");
+        fclose(fileAppuntamentiConfermati);
+        Sleep(4000);
+        return;
+    }
+    else {
+        rewind(fileAppuntamentiConfermati);
+    }
+
+    char stringaCodFiscaleFile[LEN_CODICEFISCALE];
+    char sintomiPaziente[LEN_SINTOMI];
+    char dataTest[LEN_DATATEST];
+    char ora_giorno[LEN_ORARIOTEST];
+
+    system("cls");
+    printf("Appuntamenti confermati:\n\n");
+
+    printf("|=================================================|\n\n");
+
+    while(fscanf(fileAppuntamentiConfermati, "%s %[^;]%*c %s %s", stringaCodFiscaleFile, sintomiPaziente, dataTest, ora_giorno) == 4) {
+        printf("CF: %s\tSINTOMI: %s\nDATA: %s\tORARIO: %s\n\n", stringaCodFiscaleFile, sintomiPaziente, dataTest, ora_giorno);
+        printf("|=================================================|\n\n");
+    }
+
+    fclose(fileAppuntamentiConfermati);
+
+    system("pause");
 
 }
 
 void visualizzaRichiesteTamponi() {
 
-    system("cls");
-    printf("Gli appuntamenti richiesti visualizzati qui saranno automaticamente confermati!\n\n");
-
     FILE *fileAppuntamentiRichiesti;
     fileAppuntamentiRichiesti = fopen("Dati/AppuntamentiRichiesti.txt", "r");
+
+
+    // VERIFICHIAMO PRIMA SE SONO PRESENTI APPUNTAMENTI: SE IL FILE HA DIMENSIONE 0 BYTE, USCIRA' DALLA FUNZIONE STAMPANDO UN ERRORE IN CONSOLE.
+    fseek(fileAppuntamentiRichiesti, 0L, SEEK_END);
+    long int dimensioneFile = ftell(fileAppuntamentiRichiesti);
+
+    // CONTROLLIAMO LA DIMENSIONE DEL FILE
+    if(dimensioneFile <= 0) {
+        printf("\nNon c'e' nessun appuntamento richiesto da confermare!");
+        fclose(fileAppuntamentiRichiesti);
+        Sleep(4000);
+        return;
+    }
+    else {
+        rewind(fileAppuntamentiRichiesti);
+    }
+
+    system("cls");
+    printf("Gli appuntamenti richiesti visualizzati qui saranno automaticamente confermati!\n\n");
 
     char stringaCodFiscaleFile[LEN_CODICEFISCALE];
     char stringaSintomiFile[LEN_SINTOMI];
@@ -498,6 +559,8 @@ void visualizzaRichiesteTamponi() {
 
     fclose(fileAppuntamentiRichiesti);
 
+    IncrementaGiornataTest();
+
     remove("Dati/AppuntamentiRichiesti.txt");
 
     fileAppuntamentiRichiesti = fopen("Dati/AppuntamentiRichiesti.txt", "w");
@@ -507,4 +570,70 @@ void visualizzaRichiesteTamponi() {
 
     system("pause");
 
+}
+
+void LogoutChiusuraGiornata() {
+
+    FILE *fileAppuntamentiConfermati = fopen("Dati/AppuntamentiConfermati.txt", "r");
+
+    // VERIFICHIAMO PRIMA SE SONO PRESENTI APPUNTAMENTI: SE IL FILE HA DIMENSIONE 0 BYTE, USCIRA' DALLA FUNZIONE STAMPANDO UN ERRORE IN CONSOLE.
+    fseek(fileAppuntamentiConfermati, 0L, SEEK_END);
+    long int dimensioneFile = ftell(fileAppuntamentiConfermati);
+
+    // CONTROLLIAMO LA DIMENSIONE DEL FILE
+    if(dimensioneFile <= 0) {
+        printf("\nLa lista appuntamenti e' vuota.\nSi passa al giorno successivo...n\n");
+        fclose(fileAppuntamentiConfermati);
+        Sleep(3000);
+        return;
+    }
+    else {
+        rewind(fileAppuntamentiConfermati);
+    }
+
+    FILE *fileEsitiTest = fopen("Dati/EsitiTest.txt", "a");
+    FILE *fileStoricoTest = fopen("Dati/StoricoTest.txt", "a");
+    FILE *fileAppuntamentiConfermatiTEMP = fopen("Dati/TEMPAppuntamentiConfermati.txt", "w");
+
+    listaRisultati * testaListaAppuntamenti;
+    testaListaAppuntamenti = CreaTestaRisultati();
+
+    char stringaCodFiscaleFile[LEN_CODICEFISCALE];
+    char sintomiPaziente[LEN_SINTOMI];
+    char dataTest[LEN_DATATEST];
+    char ora_giorno[LEN_ORARIOTEST];
+
+    int appuntamentoVerificato = 0;
+
+    while(fscanf(fileAppuntamentiConfermati, "%s %[^;]%*c %s %s", stringaCodFiscaleFile, sintomiPaziente, dataTest, ora_giorno) == 4) {
+        if(strcmp(RecuperaDataGiornalieraDaConfigurazione(), dataTest) == 0) {
+            InserimentoInCodaAppuntamento(testaListaAppuntamenti, stringaCodFiscaleFile, dataTest, ora_giorno, sintomiPaziente);
+            appuntamentoVerificato = 1;
+        }
+        else {
+            fprintf(fileAppuntamentiConfermatiTEMP, "%s %s; %s %s\n", stringaCodFiscaleFile, sintomiPaziente, dataTest, ora_giorno);
+        }
+    }
+
+    fclose(fileAppuntamentiConfermati);
+    fclose(fileAppuntamentiConfermatiTEMP);
+
+    remove("Dati/AppuntamentiConfermati.txt");
+    rename("Dati/TEMPAppuntamentiConfermati.txt", "Dati/AppuntamentiConfermati.txt");
+
+    if(appuntamentoVerificato == 1) {
+        AssegnaEsito(testaListaAppuntamenti);
+        ScriviSuFileEsito(testaListaAppuntamenti, fileStoricoTest, fileEsitiTest);
+        printf("\nSono stati effettuati tutti gli appuntamenti di oggi: %s\n", RecuperaDataGiornalieraDaConfigurazione());
+    }
+    else {
+        printf("\nNon e' stato fatto nessun tampone oggi %s!\n", RecuperaDataGiornalieraDaConfigurazione());
+    }
+
+    fclose(fileEsitiTest);
+    fclose(fileStoricoTest);
+
+    printf("\n\n");
+
+    system("pause");
 }

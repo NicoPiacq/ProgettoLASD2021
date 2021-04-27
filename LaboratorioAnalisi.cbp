@@ -32,6 +32,9 @@
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="DefinizioniGlobali.h" />
+		<Unit filename="FunzioniDate.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="FunzioniDipendente.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -43,6 +46,7 @@
 		<Unit filename="funzioniListe.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="gestioneDate.h" />
 		<Unit filename="gestioneListe.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />

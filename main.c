@@ -8,12 +8,16 @@
 
 #include "HeaderPaziente.h"
 #include "HeaderDipendente.h"
+#include "gestioneDate.h"
 
-int main()
-{
+int main() {
+
+    // VARIABILE PER SCEGLIERE L'OPZIONE DI ACCESSO AL SISTEMA
     int opzione = 0;
 
     do {
+
+        // DIAMO LE PRIME STAMPE IN CONSOLE
         SetConsoleTitle("Laboratorio di Analisi");
         opzione = 0;
         system("cls");
@@ -23,35 +27,33 @@ int main()
         printf("1. Accesso per i pazienti\n2. Accesso per i dipendenti\n");
         printf("\n\nNon sei registrato e vuoi effettuare un tampone?\n3. Registrati come nuovo paziente\n\n4. Esci dal programma");
 
+        // CHIEDIAMO ALL'UTENTE DI SCEGLIERE UN'OPZIONE: 1/2 ACCESSO - 3 REGISTRAZIONE - 4 USCITA
         printf("\n\n\nInserire un'opzione: ");
         scanf("%d",&opzione);
 
         switch(opzione) {
             case 1: {
-                struct paziente datiGeneraliPaziente;
-                datiGeneraliPaziente = accediComePaziente();
-                mostraPaginaPrincipale(datiGeneraliPaziente);
+                // RICHIAMA PRIMA LA PAGINA DI LOGIN PER IL PAZIENTE (CF E PSW) E POI MOSTRA LA PAGINA PRINCIPALE PER IL PAZIENTE
+                mostraPaginaPrincipale(accediComePaziente());
                 break;
 
             }
             case 2: {
-
-                struct dipendente datiGeneraliDipendente;
-                datiGeneraliDipendente = accediComeDipendente();
-
-                mostraPaginaDipendente(datiGeneraliDipendente);
-                system("cls");
+                // RICHIAMA PRIMA LA PAGINA DI LOGIN PER IL DIPENDENTE (USERID E PSW) E POI MOSTRA LA PAGINA PRINCIPALE PER IL DIPENDENTE
+                mostraPaginaDipendente(accediComeDipendente());
+                LogoutChiusuraGiornata();
+                IncrementaGiornata();
                 break;
-
             }
             case 3: {
+                // RICHIAMA LA PAGINA DI REGISTRAZIONE DATI DI UN NUOVO PAZIENTE
                 registrazionePaziente();
                 break;
 
             }
             case 4: {
-                exit(0);
-                break;
+                // ESCE DAL PROGRAMMA DEFINITIVAMENTE
+                return 0;
 
             }
             default: {
@@ -63,5 +65,4 @@ int main()
         }
     }
     while(1);
-
 }

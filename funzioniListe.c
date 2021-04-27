@@ -18,6 +18,24 @@ nodoRisultati *CreaNodoRisultati(char codFiscale[], char dataTest[], char orario
 	return tmp;
 }
 
+nodoRisultati *CreaNodoAppuntamento(char codFiscale[], char dataTest[], char orarioTest[], char sintomi[]) {
+
+	nodoRisultati * tmp = (nodoRisultati *) malloc(sizeof(nodoRisultati));
+
+	// VERIFICHIAMO CHE TMP E' STATO CORRETTAMENTE CREATO
+	if (!tmp)
+		return NULL; // TMP NON CREATO CORRETTAMENTE.
+	else {
+		tmp->next = NULL;
+		strcpy(tmp->codiceFiscale, codFiscale);
+		strcpy(tmp->dataTest, dataTest);
+		strcpy(tmp->orario, orarioTest);
+		strcpy(tmp->sintomi, sintomi);
+	}
+
+	return tmp;
+}
+
 listaRisultati *CreaTestaRisultati() {
 
 	listaRisultati * TestaTemp = NULL;
@@ -32,6 +50,8 @@ listaRisultati *CreaTestaRisultati() {
 	return TestaTemp;
 
 }
+
+
 
 void InserimentoInCodaRisultati(listaRisultati *Testa, char codFiscale[], char dataTest[], char orarioTest[], char esitoTest[]) {
 	nodoRisultati *temp = NULL;
@@ -106,6 +126,7 @@ void StampaStoricoTutto(listaRisultati *Testa) {
 }
 
 
+
 void OrdinaArraySintomatici(AppuntamentiRichiesti arrayTemp[], int dimensioneArray) {
 
     int lunghezzaSintomiTemp;
@@ -141,7 +162,7 @@ void OrdinaArrayAppuntamenti(AppuntamentiRichiesti arrayAppuntamenti[], int dime
     int indice2 = 0;
 
     for(indice1 = 0; indice1 < dimensioneArray; indice1++) {
-        if(strcmp(arrayAppuntamenti[indice1].sintomiPaziente, "Asintomatico") == 0) {
+        if(strcmp(arrayAppuntamenti[indice1].sintomiPaziente, "Asintomatico;") == 0) {
             numeroAsintomatici++;
         }
     }
@@ -154,7 +175,7 @@ void OrdinaArrayAppuntamenti(AppuntamentiRichiesti arrayAppuntamenti[], int dime
     indice1 = 0;
 
     for(indice2 = 0; indice2 < dimensioneArray; indice2++) {
-        if(strcmp(arrayAppuntamenti[indice2].sintomiPaziente, "Asintomatico") == 0) {
+        if(strcmp(arrayAppuntamenti[indice2].sintomiPaziente, "Asintomatico;") == 0) {
             arrayAsintomatici[indice1] = arrayAppuntamenti[indice2];
             indice1++;
         }
@@ -163,7 +184,7 @@ void OrdinaArrayAppuntamenti(AppuntamentiRichiesti arrayAppuntamenti[], int dime
     indice1 = 0;
 
     for(indice2 = 0; indice2 < dimensioneArray; indice2++) {
-        if(strcmp(arrayAppuntamenti[indice2].sintomiPaziente, "Asintomatico") != 0) {
+        if(strcmp(arrayAppuntamenti[indice2].sintomiPaziente, "Asintomatico;") != 0) {
             arraySintomatici[indice1] = arrayAppuntamenti[indice2];
             indice1++;
         }
@@ -184,6 +205,32 @@ void OrdinaArrayAppuntamenti(AppuntamentiRichiesti arrayAppuntamenti[], int dime
     }
 }
 
+void InserimentoInCodaAppuntamento(listaRisultati *Testa, char codFiscale[], char dataTest[], char orarioTest[], char sintomi[]) {
+	nodoRisultati *temp = NULL;
+	nodoRisultati *Ricerca = Testa->next;
+
+	// Verifichiamo se la lista è vuota
+	if (!Testa->next) {
+		temp = CreaNodoAppuntamento(codFiscale, dataTest, orarioTest, sintomi);
+
+		if(temp) {
+			Testa->next = temp;
+			return;
+		}
+	}
+	// Se non lo è, aggiungiamo in coda il risultato del test scansionato dal file.
+	else {
+		temp = CreaNodoAppuntamento(codFiscale, dataTest, orarioTest, sintomi);
+
+		while(Ricerca->next) {
+			Ricerca = Ricerca->next;
+		}
+
+		Ricerca->next = temp;
+	}
+
+	return;
+}
 
 void StampaArrayAppuntamenti(AppuntamentiRichiesti arrayAppuntamenti[], int dimensioneArray) {
 
@@ -196,4 +243,54 @@ void StampaArrayAppuntamenti(AppuntamentiRichiesti arrayAppuntamenti[], int dime
 
     }
 
+}
+
+
+
+void AssegnaEsito(listaRisultati *Testa) {
+
+    nodoRisultati * Ricerca = Testa->next;
+
+    srand(time(NULL));
+    int fortuna;
+
+    while(Ricerca != NULL && Ricerca->next != NULL) {
+        fortuna = rand() % 100+1;
+
+        if(fortuna%2 == 0) {
+            strcpy(Ricerca->esito, "POSITIVO");
+        }
+        else {
+            strcpy(Ricerca->esito, "NEGATIVO");
+        }
+
+        Ricerca = Ricerca->next;
+    }
+
+    if(Ricerca->next == NULL) {
+        fortuna = rand() % 100+1;
+
+        if(fortuna%2 == 0) {
+            strcpy(Ricerca->esito, "POSITIVO");
+        }
+        else {
+            strcpy(Ricerca->esito, "NEGATIVO");
+        }
+    }
+}
+
+void ScriviSuFileEsito(listaRisultati *Testa, FILE *fileOutputStorico, FILE *fileOutputEsito) {
+
+    nodoRisultati * Ricerca = Testa->next;
+
+	while(Ricerca != NULL && Ricerca->next != NULL) {
+        fprintf(fileOutputStorico, "%s %s %s %s\n", Ricerca->codiceFiscale, Ricerca->dataTest, Ricerca->orario, Ricerca->esito);
+        fprintf(fileOutputEsito, "%s %s %s %s\n", Ricerca->codiceFiscale, Ricerca->dataTest, Ricerca->orario, Ricerca->esito);
+        Ricerca = Ricerca->next;
+	}
+
+	if(Ricerca->next == NULL) {
+        fprintf(fileOutputStorico, "%s %s %s %s\n", Ricerca->codiceFiscale, Ricerca->dataTest, Ricerca->orario, Ricerca->esito);
+        fprintf(fileOutputEsito, "%s %s %s %s\n", Ricerca->codiceFiscale, Ricerca->dataTest, Ricerca->orario, Ricerca->esito);
+	}
 }

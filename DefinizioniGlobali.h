@@ -1,7 +1,15 @@
+#include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
+#include "errno.h"
+#include "windows.h"
+#include "conio.h"
+#include "time.h"
+
 // DEFINIZIONI PAZIENTE
 #define LEN_CODICEFISCALE 17
 #define LEN_NOME 12
-#define LEN_COGNOME 12
+#define LEN_COGNOME 20
 #define LEN_PASSWORD 15
 #define LEN_SINTOMI 128
 #define LEN_GIORNATA 11

@@ -1,1 +1,1 @@
-null (da eliminare prima di avviare, utile solo per github)
+null da eliminare

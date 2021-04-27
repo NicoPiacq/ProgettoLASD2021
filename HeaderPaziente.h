@@ -1,9 +1,3 @@
-#include "stdio.h"
-#include "stdlib.h"
-#include "string.h"
-#include "errno.h"
-#include "windows.h"
-#include "conio.h"
 #include "DefinizioniGlobali.h"
 
 
@@ -11,27 +5,56 @@
     QUESTO HEADER CONTIENE I PROTOTIPI RIGUARDANTI LA PARTE DEL PAZIENTE DI UN LABORATORIO DI ANALISI
 */
 
+// DEFINIAMO LA STRUTTURA DATI DI UN PAZIENTE
 struct paziente {
-    char codiceFiscale[LEN_CODICEFISCALE];
-    char nome[LEN_NOME];
-    char cognome[LEN_COGNOME];
-    int haEsito;
+    char codiceFiscale[LEN_CODICEFISCALE]; // CODICE FISCALE DEL PAZIENTE - 16 CARATTERI + 1 PER IL TERMINATORE
+    char nome[LEN_NOME]; // NOME DEL PAZIENTE - 11 CARATTERI + 1 PER IL TERMINATORE
+    char cognome[LEN_COGNOME]; // COGNOME DEL PAZIENTE - 19 CARATTERI + 1 PER IL TERMINATORE
+    int haEsito; // FLAG PER MOSTRARE L'OPZIONE 4 PER VISUALIZZARE GLI ESITI E DISATTIVARE LE ALTRE FUNZIONI NEL MENU PRINCIPALE
+    char esito[LEN_ESITO]; // ESITO - POSITIVO/NEGATIVO
 };
 
+// CARICA LA PAGINA PRINCIPALE DEL PAZIENTE
 void mostraPaginaPrincipale(struct paziente);
+
+// AGGIORNA LA VOCE "STATO RICHIESTA" DELLA PAGINA PRINCIPALE
 void aggiornaStatoRichiesta(char[]);
 
+// CARICA LA PAGINA DI ACCESSO DEL PAZIENTE
 struct paziente accediComePaziente();
+
+// MODIFICA IL TITOLO DELLA CONSOLE
 void impostaTitoloConsoleConCF(char[]);
 
+// CARICA LA PAGINA DI REGISTRAZIONE DEL PAZIENTE
 void registrazionePaziente();
-int generaRandomPassword();
 
+// GENERA UNA STRINGA DI CARATTERI RANDOM
+char * generaRandomPassword();
+
+// CARICA LA PAGINA PER MANDARE UNA RICHIESTA
 void prenotazioneTampone(char[]);
+
+// FUNZIONE CHE VERIFICA SE IL CODICE FISCALE E' GIA' PRESENTE IN "APPUNTAMENTIRICHIESTI.TXT"
 int controllaSeGiaPrenotato(char[]);
+
+// FUNZIONE CHE VERIFICA SE IL CODICE FISCALE E' GIA' PRESENTE IN "APPUNTAMENTICONFERMATI.TXT"
 int controllaSeGiaConfermato(char[]);
 
+// VISUALIZZA LO STATO DELL'APPUNTAMENTO E - SE DISPONIBILE - LA DATA E L'ORA DELL'APPUNTAMENTO
 void visualizzaStatoAppuntamento();
+
+// CANCELLA UN CODICE FISCALE DA "APPUNTAMENTIRICHIESTI.TXT"
 void cancellaRichiestaTampone(char[]);
 
+// MOSTRA IL MESSAGGIO DELL'ESITO DEL TAMPONE SE DISPONIBILE
 void visualizzaEsitoTampone();
+
+// AGGIUNGE CODICE FISCALE, NOME E COGNOME DAL FILE "PIATTAFORMA.TXT"
+void aggiungiAllaPiattaforma(char[], char[], char[]);
+
+// RIMUOVE UN CODICE FISCALE DAL FILE "PIATTAFORMA.TXT"
+void rimuoviDallaPiattaforma(char[]);
+
+// CREA UN NUOVO APPUNTAMENTO IN "APPUNTAMENTICONFERMATI.TXT" QUANDO UN UTENTE VISUALIZZA L'ESITO ED E' POSITIVO
+void aggiungiAppuntamentoAutomaticamente(char[]);

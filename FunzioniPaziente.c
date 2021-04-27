@@ -1,4 +1,6 @@
 #include "HeaderPaziente.h"
+#include "HeaderDipendente.h"
+#include "gestioneDate.h"
 
 // QUESTE TRE FUNZIONI SONO PURAMENTE GRAFICHE E SERVONO PER GUIDARE L'UTENTE NELLA REGISTRAZIONE DEI DATI (E A NON SPORCARE LA CONSOLE)
 void mostraMessaggioRegistrazione1() {
@@ -25,6 +27,27 @@ void mostraMessaggioRegistrazione3(char codFiscaleMessaggio[], char nomeMessaggi
     printf("Inserire il Nome: %s\n\n",nomeMessaggio);
 }
 
+// GENERIAMO LA PASSWORD PER IL NUOVO UTENTE
+char * generaRandomPassword() {
+
+    static const char alfanumerico[] = "0123456789"
+                                       "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                       "abcdefghijklmnopqrstuvwxyz"
+                                       "@#";
+
+    srand(time(NULL));
+    int i = 0;
+    char * password = malloc(sizeof(char) * LEN_PASSWORD);
+
+    for(i = 0; i < LEN_PASSWORD - 1; i++) {
+        password[i] = alfanumerico[rand() % (sizeof(alfanumerico) - 1)];
+    }
+
+    password[LEN_PASSWORD] = '\0';
+
+    return password;
+
+}
 
 /* QUI C'E' IL CORPO PRINCIPALE PER LA REGISTRAZIONE DELL'UTENTE NEL FILE ListaUtenti.txt
 
@@ -39,6 +62,7 @@ void registrazionePaziente() {
     struct paziente registrazioneDatiPaziente;
 
     FILE *fileRegistrazione;
+    char * password;
 
     // Apriamo il file in modalità Solo Lettura
     fileRegistrazione = fopen("Dati/ListaUtenti.txt", "r");
@@ -47,6 +71,7 @@ void registrazionePaziente() {
     char stringaPrelevata[LEN_CODICEFISCALE];
     char stringaPrelevata2[LEN_NOME];
     char stringaPrelevata3[LEN_COGNOME];
+    char stringaPrelevata4[LEN_PASSWORD];
     int stringaVerificata = 0;
 
     // Accertiamoci che il File esista, altrimenti va in errore
@@ -68,7 +93,7 @@ void registrazionePaziente() {
 
         // Verifichiamo prima la lunghezza del codice fiscale
         if(strlen(registrazioneDatiPaziente.codiceFiscale) != 16) {
-            printf("Il Codice Fiscale inserito e' errato.");
+            printf("\nIl Codice Fiscale inserito e' errato.");
             Sleep(3000);
             system("cls");
             mostraMessaggioRegistrazione1();
@@ -76,18 +101,28 @@ void registrazionePaziente() {
         }
 
         // Verifichiamo se il codice fiscale inserito è già presente nella lista degli utenti
-        while(fscanf(fileRegistrazione, "%s %s %s\n",stringaPrelevata,stringaPrelevata2,stringaPrelevata3) == 3) {
-            if(strcmp(stringaPrelevata, registrazioneDatiPaziente.codiceFiscale) == 0) {
-                stringaVerificata = 0;
-                printf("Il Codice Fiscale inserito e' gia' registrato.");
-                Sleep(3000);
-                system("cls");
-                mostraMessaggioRegistrazione1();
-                break;
+
+        fseek(fileRegistrazione, 0L, SEEK_END);
+        long int dimensioneFile = ftell(fileRegistrazione);
+
+        if(dimensioneFile > 0) {
+            rewind(fileRegistrazione);
+            while(fscanf(fileRegistrazione, "%s %s %s %s\n",stringaPrelevata,stringaPrelevata2,stringaPrelevata3, stringaPrelevata4) == 4) {
+                if(strcmp(stringaPrelevata, registrazioneDatiPaziente.codiceFiscale) == 0) {
+                    stringaVerificata = 0;
+                    printf("\nIl Codice Fiscale inserito e' gia' registrato.");
+                    Sleep(3000);
+                    system("cls");
+                    mostraMessaggioRegistrazione1();
+                    break;
+                }
+                else {
+                    stringaVerificata = 1;
+                }
             }
-            else {
-                stringaVerificata = 1;
-            }
+        }
+        else {
+            stringaVerificata = 1;
         }
     }
     while( (strlen(registrazioneDatiPaziente.codiceFiscale) == 16) && (stringaVerificata == 0) );
@@ -102,7 +137,7 @@ void registrazionePaziente() {
         scanf("%s",registrazioneDatiPaziente.nome);
 
         if(strlen(registrazioneDatiPaziente.nome) > 12) {
-            printf("Il nome supera il limite di caratteri.");
+            printf("\nIl nome supera il limite di caratteri.");
             Sleep(3000);
             system("cls");
             mostraMessaggioRegistrazione2(registrazioneDatiPaziente.codiceFiscale);
@@ -120,13 +155,15 @@ void registrazionePaziente() {
         scanf("%s",registrazioneDatiPaziente.cognome);
 
         if(strlen(registrazioneDatiPaziente.cognome) > 12) {
-            printf("Il cognome supera il limite di caratteri.");
+            printf("\nIl cognome supera il limite di caratteri.");
             Sleep(3000);
             system("cls");
             mostraMessaggioRegistrazione3(registrazioneDatiPaziente.codiceFiscale, registrazioneDatiPaziente.nome);
         }
     }
     while(strlen(registrazioneDatiPaziente.cognome) > 12);
+
+    password = generaRandomPassword();
 
     // Chiudiamo il file dalla modalità solo lettura
     fclose(fileRegistrazione);
@@ -135,16 +172,18 @@ void registrazionePaziente() {
     fileRegistrazione = fopen("Dati/ListaUtenti.txt", "a");
 
     // Scriviamo sul file
-    fprintf(fileRegistrazione, "%s %s %s\n",registrazioneDatiPaziente.codiceFiscale, registrazioneDatiPaziente.nome, registrazioneDatiPaziente.cognome);
+    fprintf(fileRegistrazione, "%s %s %s %s\n",registrazioneDatiPaziente.codiceFiscale, registrazioneDatiPaziente.nome, registrazioneDatiPaziente.cognome, password);
 
     // Chiudiamo il file
     fclose(fileRegistrazione);
 
     // Avvisiamo l'utente che la registrazione è completata e che può proseguire nella pagina principale
-    printf("\n\n\nREGISTRAZIONE COMPLETATA!\nRicorda di segnarti questo codice di accesso: NULL\n\n\n");
-    printf("Premi INVIO per ritornare al menu' principale...");
+    printf("\n\n\nREGISTRAZIONE COMPLETATA!\nRicorda di segnarti questo codice di accesso: %s\n\n\n", password);
 
-    getchar();
+    // Liberiamo lo spazio di memoria occupato dalla password
+    free(password);
+
+    system("pause");
 }
 
 
@@ -222,6 +261,7 @@ int controllaSeGiaConfermato(char codFiscale[]) {
 }
 
 
+
 void visualizzaStatoAppuntamento(char codFiscale[]) {
 
     FILE *fileAppuntamentiConfermati = fopen("Dati/AppuntamentiConfermati.txt", "r");
@@ -257,7 +297,6 @@ void visualizzaStatoAppuntamento(char codFiscale[]) {
     }
 }
 
-
 void aggiornaStatoRichiesta(char codFiscale[]) {
 
     switch(controllaSeGiaConfermato(codFiscale)) {
@@ -279,6 +318,8 @@ void aggiornaStatoRichiesta(char codFiscale[]) {
         }
     }
 }
+
+
 
 void cancellaRichiestaTampone(char codFiscale[]) {
 
@@ -377,89 +418,6 @@ void cancellaRichiestaTampone(char codFiscale[]) {
     while(1);
 }
 
-void mostraPaginaPrincipale(struct paziente datiPazienteHomepage) {
-
-    int opzione = 0;
-
-    do {
-        system("cls");
-
-        printf("Benvenuto Pagina Principale del Laboratorio di Analisi 'San Nicola'\n\n");
-        printf("*************DATI UTENTE*************\n\n\t%s %s\n Codice Fiscale: %s\n Stato richiesta: ", datiPazienteHomepage.nome, datiPazienteHomepage.cognome, datiPazienteHomepage.codiceFiscale);
-        aggiornaStatoRichiesta(datiPazienteHomepage.codiceFiscale);
-        printf("*************************************");
-        printf("\n\nEcco cosa puoi fare: \n\n");
-
-        if(datiPazienteHomepage.haEsito == 1) {
-            printf("1. Prenota un tampone\n2. Visualizza lo stato della richiesta di un tampone\n3. Cancella la richiesta\n4. Visualizza esito tampone\n5. Esegui il logout");
-        }
-        else {
-            printf("1. Prenota un tampone\n2. Visualizza lo stato della richiesta di un tampone\n3. Cancella la richiesta\n4. Esegui il logout");
-        }
-
-
-        printf("\n\nScegliere un'opzione: ");
-        scanf("%d",&opzione);
-
-        switch(opzione) {
-            case 1: {
-                int statoRichiesta = controllaSeGiaConfermato(datiPazienteHomepage.codiceFiscale);
-
-                if (statoRichiesta == 0) {
-                    prenotazioneTampone(datiPazienteHomepage.codiceFiscale);
-                    break;
-                }
-                else if (statoRichiesta == 1) {
-                    printf("\nHai gia' effettuato una richiesta di prenotazione!\nVisualizza o cancella la richiesta dalla pagina principale.");
-                    Sleep(4500);
-                    break;
-                }
-                else if (statoRichiesta == 2) {
-                    printf("\nLa tua richiesta e' stata accettata!\nVisualizza la data e l'ora dell'appuntamento scegliendo l'opzione 2.");
-                    Sleep(4500);
-                    break;
-                }
-            }
-            case 2: {
-                visualizzaStatoAppuntamento(datiPazienteHomepage.codiceFiscale);
-                break;
-            }
-            case 3: {
-                cancellaRichiestaTampone(datiPazienteHomepage.codiceFiscale);
-                break;
-            }
-            case 4: {
-                if(datiPazienteHomepage.haEsito == 1) {
-                    printf("\nI tamponi non sono ancora disponibili...");
-                    Sleep(3000);
-                }
-                else {
-                    return;
-                }
-                break;
-            }
-            case 5: {
-                if(datiPazienteHomepage.haEsito == 0) {
-                    printf("Hai scelto un'opzione non disponibile");
-                    Sleep(3000);
-                    opzione = 0;
-                }
-                else {
-                    return;
-                }
-                break;
-            }
-            default: {
-                printf("Hai scelto un'opzione non disponibile");
-                Sleep(3000);
-                break;
-            }
-        }
-    }
-    while(1);
-}
-
-
 
 
 void impostaTitoloConsoleConCF(char codice[]) {
@@ -530,17 +488,16 @@ struct paziente accediComePaziente() {
 
 
 
-
 void mostraMessaggioPrenotazione1(char codFiscale[]) {
     system("cls");
-    printf("Puoi prenotare un tampone da qui, devi specificare solo se presenti dei sintomi.\n");
+    printf("Puoi prenotare un tampone da qui, devi specificare solo se presenti dei sintomi.\n\n");
     printf("Prima di proseguire, confermi che %s ",codFiscale);
 }
 
 void mostraMessaggioPrenotazione2(char codFiscale[]) {
     system("cls");
-    printf("Puoi prenotare un tampone da qui, devi specificare solo se presenti dei sintomi.\n");
-    printf("Prima di proseguire, confermi che %s e' il tuo Codice Fiscale? (S/N): S",codFiscale);
+    printf("Puoi prenotare un tampone da qui, devi specificare solo se presenti dei sintomi.\n\n");
+    printf("Prima di proseguire, confermi che %s e' il tuo Codice Fiscale? (S/N): S\n\n",codFiscale);
 }
 
 void prenotazioneTampone(char codFiscale[]) {
@@ -590,7 +547,7 @@ void prenotazioneTampone(char codFiscale[]) {
                         }
 
                         case 'N': {
-                            printf("\nSarai registrato come asintomatico!\nTieni conto che gli asintomatici hanno meno priorita'.");
+                            printf("\nSarai registrato come asintomatico!\nTieni conto che gli asintomatici hanno meno priorita' nelle prenotazioni.\n");
                             fprintf(fileAppuntamentiRichiesti, "%s Asintomatico;\n", codFiscale);
                             break;
                         }
@@ -604,8 +561,8 @@ void prenotazioneTampone(char codFiscale[]) {
                     }
 
                     fclose(fileAppuntamentiRichiesti);
-                    printf("\n\nAppuntamento richiesto con successo.\nPotrai visualizzare la richiesta effettuata tramite la pagina principale oppure,\ncancellare la richiesta prima che questa viene confermata.\n\n");
-                    Sleep(3000);
+                    printf("\nAppuntamento richiesto con successo.\nPotrai visualizzare lo stato della richiesta tramite la pagina principale oppure,\ncancellare la richiesta prima che questa venga confermata.\n\n");
+                    printf("Nel caso si voglia cancellare un appuntamento, e' necessario contattare un dipendente del laboratorio.\n\n\n");
 
                     system("pause");
                     return;
@@ -616,6 +573,283 @@ void prenotazioneTampone(char codFiscale[]) {
             printf("Opzione errata.");
             Sleep(3000);
             break;
+            }
+        }
+    }
+    while(1);
+}
+
+
+
+int verificaEsitoTampone(struct paziente datiPaziente) {
+
+    FILE *fileEsitoTampone = fopen("Dati/EsitiTest.txt", "r");
+
+    fseek(fileEsitoTampone, 0L, SEEK_END);
+    long int dimensioneFile = ftell(fileEsitoTampone);
+
+    // CONTROLLIAMO LA DIMENSIONE DEL FILE
+    if(dimensioneFile <= 0) {
+        return 0;
+    }
+    else {
+        rewind(fileEsitoTampone);
+    }
+
+    char codFiscaleDaFile[LEN_CODICEFISCALE];
+    char dataTestDaFile[LEN_DATATEST];
+    char orarioTestDaFile[LEN_ORARIOTEST];
+    char esitoTestDaFile[LEN_ESITO];
+
+    while(fscanf(fileEsitoTampone, "%s %s %s %s", codFiscaleDaFile, dataTestDaFile, orarioTestDaFile, esitoTestDaFile) == 4) {
+        if(strcmp(codFiscaleDaFile, datiPaziente.codiceFiscale) == 0) {
+            fclose(fileEsitoTampone);
+            return 1;
+        }
+    }
+
+    fclose(fileEsitoTampone);
+    return 0;
+}
+
+void aggiungiAllaPiattaforma(char codFiscale[], char nome[], char cognome[]) {
+
+    FILE *filePiattaforma = fopen("Dati/Piattaforma.txt", "a+");
+
+    char codFiscaleDaFile[LEN_CODICEFISCALE];
+    char nomeDaFile[LEN_NOME];
+    char cognomeDaFile[LEN_COGNOME];
+
+    int giaPresente = 0;
+
+    while(fscanf(filePiattaforma, "%s %s %s", codFiscaleDaFile, nomeDaFile, cognomeDaFile) == 3) {
+        if(strcmp(codFiscale, codFiscaleDaFile) == 0) {
+            giaPresente = 1;
+            break;
+        }
+    }
+
+    if(giaPresente == 0) {
+        fprintf(filePiattaforma, "%s %s %s\n", codFiscale, nome, cognome);
+    }
+
+    aggiungiAppuntamentoAutomaticamente(codFiscale);
+
+    fclose(filePiattaforma);
+    return;
+}
+
+void rimuoviDallaPiattaforma(char codFiscale[]) {
+
+    FILE *filePiattaforma = fopen("Dati/Piattaforma.txt", "r");
+    FILE *filePiattaformaNuovo = fopen("Dati/PiattaformaNuovo.txt", "w");
+
+    char codFiscaleDaFile[LEN_CODICEFISCALE];
+    char nomeDaFile[LEN_NOME];
+    char cognomeDaFile[LEN_COGNOME];
+
+    while(fscanf(filePiattaforma, "%s %s %s", codFiscaleDaFile, nomeDaFile, cognomeDaFile) == 3) {
+        if(strcmp(codFiscale, codFiscaleDaFile) == 0) {
+            continue;
+        }
+        else {
+            fprintf(filePiattaformaNuovo, "%s %s %s", codFiscaleDaFile, nomeDaFile, cognomeDaFile);
+        }
+    }
+
+    fclose(filePiattaforma);
+    fclose(filePiattaformaNuovo);
+
+    remove("Dati/Piattaforma.txt");
+    rename("Dati/PiattaformaNuovo.txt", "Dati/Piattaforma.txt");
+}
+
+void visualizzaEsitoTampone(struct paziente datiPaziente) {
+
+    FILE *fileEsitoTampone = fopen("Dati/EsitiTest.txt", "r");
+    FILE *fileEsitoTamponeNuovo = fopen("Dati/EsitiTestNuovo.txt", "w");
+
+    char codFiscaleDaFile[LEN_CODICEFISCALE];
+    char dataTestDaFile[LEN_DATATEST];
+    char orarioTestDaFile[LEN_ORARIOTEST];
+    char esitoTestDaFile[LEN_ESITO];
+
+
+    while(fscanf(fileEsitoTampone, "%s %s %s %s", codFiscaleDaFile, dataTestDaFile, orarioTestDaFile, esitoTestDaFile) == 4) {
+        if(strcmp(codFiscaleDaFile, datiPaziente.codiceFiscale) == 0) {
+
+            if(strcmp(esitoTestDaFile, "POSITIVO") == 0) {
+                printf("POSITIVO\nEseguito il: %s\n\n",dataTestDaFile);
+                printf("Questo significa che ti e' gia' stato prenotato il tampone.\n\nProssimo appuntamento:");
+                aggiungiAllaPiattaforma(datiPaziente.codiceFiscale, datiPaziente.nome, datiPaziente.cognome);
+                visualizzaStatoAppuntamento(datiPaziente.codiceFiscale);
+            }
+
+            else if(strcmp(esitoTestDaFile, "NEGATIVO") == 0) {
+                printf("NEGATIVO\nEseguito il: %s\n\n",dataTestDaFile);
+                rimuoviDallaPiattaforma(datiPaziente.codiceFiscale);
+            }
+        }
+        else {
+            fprintf(fileEsitoTamponeNuovo, "%s %s %s %s\n", codFiscaleDaFile, dataTestDaFile, orarioTestDaFile, esitoTestDaFile);
+        }
+    }
+
+    fclose(fileEsitoTampone);
+    fclose(fileEsitoTamponeNuovo);
+
+    if(remove("Dati/EsitiTest.txt") == -1) {
+        printf("\n\nErrore nella cancellazione: %s",strerror(errno));
+    }
+    rename("Dati/EsitiTestNuovo.txt", "Dati/EsitiTest.txt");
+
+
+}
+
+void aggiungiAppuntamentoAutomaticamente(char codFiscale[]) {
+
+    FILE *fileAppuntamentiConfermati;
+    fileAppuntamentiConfermati = fopen("Dati/AppuntamentiConfermati.txt", "w");
+
+    // PRELEVIAMO CHE SLOT DELLA GIORNATA POSSIAMO ASSEGNARE
+    char dataGiornaliera[LEN_DATATEST];
+    char ultimaDataTest[LEN_DATATEST];
+    int indiceGiornata = 0;
+    FILE *fileConfigurazione = fopen("Dati/FileConfigurazione.txt", "r");
+    fseek(fileConfigurazione, 72, SEEK_SET);
+    fscanf(fileConfigurazione, "%d", &indiceGiornata);
+    fclose(fileConfigurazione);
+
+    // INSERIAMO NEGLI APPUNTAMENTI CONFERMATI IL CODICE FISCALE, LA DATA CHE VERRA' PRELEVATA DAL FILE DI CONFIGURAZIONE E L'ORARIO LEGGENDO SEMPRE DAL FILE DI CONFIGURAZIONE L'ULTIMO SLOT DISPONIBILE
+    fprintf(fileAppuntamentiConfermati, "%s Positivo da tampone; %s %s\n", codFiscale, AssegnaGiornataTest(), AssegnaOrarioTest(indiceGiornata));
+
+    if(indiceGiornata == 5) {
+        IncrementaGiornataTest();
+        indiceGiornata = 0;
+    }
+    else
+        indiceGiornata++;
+
+    fclose(fileAppuntamentiConfermati);
+
+    // PRIMA DI REFRESHARE, MEMORIZZIAMO LE ALTRE INFORMAZIONI DEL FILE DI CONFIGURAZIONE
+    strcpy(dataGiornaliera, RecuperaDataGiornalieraDaConfigurazione());
+    strcpy(ultimaDataTest, AssegnaGiornataTest());
+
+    // REFRESHIAMO IL FILE DI CONFIGURAZIONE CON IL SUCCESSIVO SLOT DISPONIBILE
+    FILE *fileConfigurazioneNuovo = fopen("Dati/FileConfigurazione.txt", "w");
+
+    fprintf(fileConfigurazioneNuovo, "dataGiornaliera= %s\n", dataGiornaliera);
+    fprintf(fileConfigurazioneNuovo, "dataUltimaRegistrata= %s\n", ultimaDataTest);
+    fprintf(fileConfigurazioneNuovo, "dataSlot= %d", indiceGiornata);
+
+    fclose(fileConfigurazioneNuovo);
+    fclose(fileAppuntamentiConfermati);
+
+    return;
+}
+
+
+void mostraPaginaPrincipale(struct paziente datiPazienteHomepage) {
+
+    int opzione = 0;
+
+    do {
+        system("cls");
+
+        datiPazienteHomepage.haEsito = verificaEsitoTampone(datiPazienteHomepage);
+
+        printf("Benvenuto Pagina Principale del Laboratorio di Analisi 'San Nicola'\n\n");
+        printf("*************DATI UTENTE*************\n\n\t%s %s\n Codice Fiscale: %s\n Stato richiesta: ", datiPazienteHomepage.nome, datiPazienteHomepage.cognome, datiPazienteHomepage.codiceFiscale);
+        aggiornaStatoRichiesta(datiPazienteHomepage.codiceFiscale);
+        printf("*************************************");
+        printf("\n\nEcco cosa puoi fare: \n\n");
+
+        if(datiPazienteHomepage.haEsito == 1) {
+            printf("1. Prenota un tampone\n2. Visualizza lo stato della richiesta di un tampone\n3. Cancella la richiesta\n4. Visualizza esito tampone\n5. Esegui il logout");
+        }
+        else {
+            printf("1. Prenota un tampone\n2. Visualizza lo stato della richiesta di un tampone\n3. Cancella la richiesta\n4. Esegui il logout");
+        }
+
+
+        printf("\n\nScegliere un'opzione: ");
+        scanf("%d",&opzione);
+
+        switch(opzione) {
+            case 1: {
+                int statoRichiesta = controllaSeGiaConfermato(datiPazienteHomepage.codiceFiscale);
+
+                if (statoRichiesta == 0) {
+
+                    if(datiPazienteHomepage.haEsito == 1) {
+                        printf("\nHai un esito da controllare!\nNon puoi effettuare prenotazioni se devi ancora visualizzare l'esito.");
+                        Sleep(3500);
+                        break;
+                    }
+
+                    prenotazioneTampone(datiPazienteHomepage.codiceFiscale);
+                    break;
+                }
+                else if (statoRichiesta == 1) {
+                    printf("\nHai gia' effettuato una richiesta di prenotazione!\nVisualizza o cancella la richiesta dalla pagina principale.");
+                    Sleep(4500);
+                    break;
+                }
+                else if (statoRichiesta == 2) {
+                    printf("\nLa tua richiesta e' stata accettata!\nVisualizza la data e l'ora dell'appuntamento scegliendo l'opzione 2.");
+                    Sleep(4500);
+                    break;
+                }
+            }
+            case 2: {
+
+                if(datiPazienteHomepage.haEsito == 1) {
+                    printf("\nHai un esito da visualizzare!");
+                    Sleep(2500);
+                    break;
+                }
+
+                visualizzaStatoAppuntamento(datiPazienteHomepage.codiceFiscale);
+                break;
+            }
+            case 3: {
+
+                if(datiPazienteHomepage.haEsito == 1) {
+                    printf("\nHai un esito da visualizzare!");
+                    Sleep(2500);
+                    break;
+                }
+
+                cancellaRichiestaTampone(datiPazienteHomepage.codiceFiscale);
+                break;
+            }
+            case 4: {
+                if(datiPazienteHomepage.haEsito == 1) {
+                    printf("\nIl tuo tampone ha dato esito: ");
+                    visualizzaEsitoTampone(datiPazienteHomepage);
+                    break;
+                }
+                else {
+                    return;
+                }
+                break;
+            }
+            case 5: {
+                if(datiPazienteHomepage.haEsito == 0) {
+                    printf("Hai scelto un'opzione non disponibile");
+                    Sleep(3000);
+                    opzione = 0;
+                }
+                else {
+                    return;
+                }
+                break;
+            }
+            default: {
+                printf("Hai scelto un'opzione non disponibile");
+                Sleep(3000);
+                break;
             }
         }
     }

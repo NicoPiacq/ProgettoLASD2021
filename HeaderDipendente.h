@@ -1,40 +1,35 @@
-#include "stdio.h"
-#include "stdlib.h"
-#include "string.h"
-#include "errno.h"
-#include "windows.h"
-
 #include "DefinizioniGlobali.h"
 
-typedef enum esitoTest {
-    POSITIVO,
-    NEGATIVO
-} esitoTampone;
-
-typedef enum orarioTest {
-    MATTINA,
-    POMERIGGIO,
-    SERA
-} orarioVisita;
-
+// DEFINIZIONE STRUTTURA DATI PER UN DIPENDENTE
 struct dipendente {
     char nome[LEN_NOME_DIPENDENTE];
     char cognome[LEN_COGNOME_DIPENDENTE];
     char userid[LEN_USERID_DIPENDENTE];
 };
 
+// CARICA LA PAGINA DI ACCESSO DI UN DIPENDENTE (USERID E PSW)
 struct dipendente accediComeDipendente();
+
+// CARICA LA PAGINA PRINCIPALE DI UN DIPENDENTE
 void mostraPaginaDipendente();
 
+// CARICA LA PAGINA DI VISUALIZZAZIONE STORICO TEST (2 MODALITA' TEMPORALI: TUTTO LO STORICO O DATA SPECIFICA)
 void visualizzaStoricoTest();
 
+// VISUALIZZA E CONFERMA LE RICHIESTE IN "APPUNTAMENTIRICHIESTI.TXT" E LI SALVA COME APPUNTAMENTI IN "APPUNTAMENTICONFERMATI.TXT"
 void visualizzaRichiesteTamponi();
 
+// VISUALIZZA GLI APPUNTAMENTI SALVATI IN "APPUNTAMENTICONFERMATI.TXT"
 void visualizzaAppuntamentiConfermati();
 
+// AGGIUNGE MANUALMENTE UN NUOVO APPUNTAMENTO IN "APPUNTAMENTICONFERMATI.TXT"
 void aggiungiNuovoAppuntamentoConfermato();
+
+// INDICA LO STATO DEL CODICE FISCALE INSERITO SE HA GIA' UNA RICHIESTA O UN APPUNTAMENTO
 int verificaCodiceFiscale(char[]);
 
+// RIMUOVE MANUALMENTE UN APPUNTAMENTO DA "APPUNTAMENTICONFERMATI.TXT"
 void rimuoviAppuntamentoConfermato();
 
-const char* AssegnaOrarioTest(int);
+// ASSEGNA GLI ESITI AGLI APPUNTAMENTI IN "APPUNTAMENTICONFERMATI.TXT", INCREMENTA LA GIORNATA IN "FILECONFIGURAZIONE.TXT" ED ESEGUE IL LOGOUT
+void LogoutChiusuraGiornata();

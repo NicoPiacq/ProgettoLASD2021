@@ -1,24 +1,21 @@
 # depslib dependency file v1.0
-1618924949 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\main.c
+1619528648 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\main.c
 	"HeaderPaziente.h"
 	"HeaderDipendente.h"
+	"gestioneDate.h"
 
 1618385459 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\definizioni.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 
-1619010326 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\headerpaziente.h
-	"stdio.h"
-	"stdlib.h"
-	"string.h"
-	"errno.h"
-	"windows.h"
-	"conio.h"
+1619529008 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\headerpaziente.h
 	"DefinizioniGlobali.h"
 
-1619024959 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\funzionipaziente.c
+1619453300 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\funzionipaziente.c
 	"HeaderPaziente.h"
+	"HeaderDipendente.h"
+	"gestioneDate.h"
 
 1618387090 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\headergenerale.h
 	<stdio.h>
@@ -43,27 +40,33 @@
 	"HeaderPaziente.h"
 	"windows.h"
 
-1619024959 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\funzionidipendente.c
+1619528478 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\funzionidipendente.c
 	"HeaderDipendente.h"
 	"HeaderPaziente.h"
 	"gestioneListe.h"
+	"gestioneDate.h"
 
-1619021543 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\headerdipendente.h
+1619529263 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\headerdipendente.h
+	"DefinizioniGlobali.h"
+
+1619529867 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\gestioneliste.h
+	"DefinizioniGlobali.h"
+
+1619178025 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\funzioniliste.c
+	"gestioneListe.h"
+
+1619452674 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\definizioniglobali.h
 	"stdio.h"
 	"stdlib.h"
 	"string.h"
 	"errno.h"
 	"windows.h"
+	"conio.h"
+	"time.h"
+
+1619529965 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\gestionedate.h
 	"DefinizioniGlobali.h"
 
-1619020365 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\gestioneliste.h
-	"stdio.h"
-	"stdlib.h"
-	"string.h"
-	"DefinizioniGlobali.h"
-
-1619020193 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\funzioniliste.c
-	"gestioneListe.h"
-
-1619010220 c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\definizioniglobali.h
+1619187774 source:c:\users\nicola\desktop\unina\labasd\laboratorioanalisi\funzionidate.c
+	"gestioneDate.h"
 
