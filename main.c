@@ -39,10 +39,9 @@ int main() {
 
             }
             case 2: {
-                // RICHIAMA PRIMA LA PAGINA DI LOGIN PER IL DIPENDENTE (USERID E PSW) E POI MOSTRA LA PAGINA PRINCIPALE PER IL DIPENDENTE
+                // RICHIAMA PRIMA LA PAGINA DI LOGIN PER IL DIPENDENTE (USERID E PSW) E POI MOSTRA LA PAGINA PRINCIPALE PER IL DIPENDENTE. ALL'USCITA DELLA FUNZIONE, EFFETTUA IL LOGOUT (ASSEGNANDO GLI ESITI) E INCREMENTA LA DATA GIORNALIERA
                 mostraPaginaDipendente(accediComeDipendente());
                 LogoutChiusuraGiornata();
-                IncrementaGiornata();
                 break;
             }
             case 3: {

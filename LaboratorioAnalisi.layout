@@ -2,59 +2,33 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="HeaderDipendente.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1364" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="FunzioniDipendente.c" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="21506" topLine="0" />
-		</Cursor>
-		<Folding>
-			<Collapse line="5" />
-			<Collapse line="55" />
-			<Collapse line="94" />
-			<Collapse line="139" />
-			<Collapse line="181" />
-			<Collapse line="255" />
-			<Collapse line="369" />
-			<Collapse line="425" />
-			<Collapse line="464" />
-			<Collapse line="510" />
-			<Collapse line="574" />
-		</Folding>
-	</File>
 	<File name="gestioneListe.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="2317" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="gestioneDate.h" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="funzioniListe.c" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="541" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="HeaderPaziente.h" open="1" top="1" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2255" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="FunzioniDate.c" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="8186" topLine="0" />
+			<Cursor1 position="9436" topLine="0" />
 		</Cursor>
 		<Folding>
-			<Collapse line="2" />
-			<Collapse line="19" />
-			<Collapse line="33" />
-			<Collapse line="137" />
-			<Collapse line="241" />
+			<Collapse line="3" />
+			<Collapse line="22" />
+			<Collapse line="41" />
+			<Collapse line="58" />
+			<Collapse line="86" />
+			<Collapse line="114" />
+			<Collapse line="136" />
+			<Collapse line="164" />
+			<Collapse line="216" />
+			<Collapse line="244" />
+			<Collapse line="258" />
+			<Collapse line="291" />
 		</Folding>
 	</File>
-	<File name="FunzioniPaziente.c" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="FunzioniPaziente.c" open="1" top="1" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="29708" topLine="11" />
+			<Cursor1 position="35641" topLine="192" />
 		</Cursor>
 		<Folding>
 			<Collapse line="5" />
@@ -62,51 +36,75 @@
 			<Collapse line="19" />
 			<Collapse line="30" />
 			<Collapse line="59" />
-			<Collapse line="190" />
-			<Collapse line="217" />
-			<Collapse line="264" />
-			<Collapse line="299" />
-			<Collapse line="323" />
-			<Collapse line="422" />
-			<Collapse line="437" />
-			<Collapse line="490" />
-			<Collapse line="496" />
-			<Collapse line="502" />
-			<Collapse line="583" />
-			<Collapse line="614" />
-			<Collapse line="641" />
-			<Collapse line="666" />
-			<Collapse line="708" />
-			<Collapse line="752" />
+			<Collapse line="192" />
+			<Collapse line="227" />
+			<Collapse line="289" />
+			<Collapse line="330" />
+			<Collapse line="359" />
+			<Collapse line="481" />
+			<Collapse line="499" />
+			<Collapse line="567" />
+			<Collapse line="573" />
+			<Collapse line="582" />
+			<Collapse line="680" />
+			<Collapse line="720" />
+			<Collapse line="754" />
+			<Collapse line="834" />
 		</Folding>
 	</File>
 	<File name="DefinizioniGlobali.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="62" topLine="0" />
+			<Cursor1 position="268" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="HeaderDipendente.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1364" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="main.c" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2130" topLine="11" />
+			<Cursor1 position="1765" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="funzioniListe.c" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="gestioneDate.h" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="7564" topLine="0" />
+			<Cursor1 position="479" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="FunzioniDate.c" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="8266" topLine="0" />
 		</Cursor>
 		<Folding>
-			<Collapse line="2" />
-			<Collapse line="20" />
-			<Collapse line="38" />
-			<Collapse line="55" />
-			<Collapse line="82" />
-			<Collapse line="107" />
-			<Collapse line="129" />
-			<Collapse line="156" />
-			<Collapse line="207" />
-			<Collapse line="234" />
-			<Collapse line="249" />
-			<Collapse line="281" />
+			<Collapse line="3" />
+			<Collapse line="21" />
+			<Collapse line="36" />
+			<Collapse line="141" />
+			<Collapse line="246" />
 		</Folding>
+	</File>
+	<File name="FunzioniDipendente.c" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="12756" topLine="0" />
+		</Cursor>
+		<Folding>
+			<Collapse line="5" />
+			<Collapse line="55" />
+			<Collapse line="96" />
+			<Collapse line="141" />
+			<Collapse line="184" />
+			<Collapse line="262" />
+			<Collapse line="381" />
+			<Collapse line="443" />
+			<Collapse line="483" />
+			<Collapse line="530" />
+			<Collapse line="595" />
+		</Folding>
+	</File>
+	<File name="HeaderPaziente.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="31" topLine="0" />
+		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

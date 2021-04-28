@@ -1,1 +1,3 @@
-null da eliminare
+PCQNCL99R05G309V Asintomatico; 24/04/2021 Mattina
+PCQRDM66R17I158W Asintomatico; 24/04/2021 Mattina
+AAABBBCCCDDDEEE9 Malato; 24/04/2021 Pomeriggio
